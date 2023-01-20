@@ -2,7 +2,7 @@ import json
 from collections import namedtuple
 from enum import Enum
 from random import uniform, choices
-from Context import GridContext, CellContext, Action, ActionType, ContextRequest
+from Context import GridContext, CellContext, Action, ActionType, ContextRequest, Point
 
 
 class CellStatus(Enum):
@@ -25,16 +25,16 @@ class Cell:
         return []
 
     def get_context(self) -> CellContext:
-        pass
+        return []
 
     def is_alive(self):
         return self.status == CellStatus.ALIVE
 
     def choose_direction(self, grid_context):
-        direction = Point(1,1) # Default is no movement
-        # TODO: CHANGE EVERYTHING TO RELATIVE
+        direction = Point(0,0) # Default is no movement
         
         attractions = grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD]
+        print(attractions)
         attraction_sum = sum(attractions.values())
         if(attraction_sum): # If there is attraction
             direction = choices(list(attractions.keys()), [val/attraction_sum for val in attractions.values()])
@@ -50,7 +50,7 @@ class TipCell(Cell):
         actions = []
         # Migrate
         if (self.should_migrate()):
-            actions.append(Action(dst=self.choose_direction(grid_context), type=ActionType.Migrate))
+            actions.append(Action(dst=self.choose_direction(grid_context), type=ActionType.MIGRATE))
         
         return actions
 

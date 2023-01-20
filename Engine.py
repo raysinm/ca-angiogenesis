@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from Grid import Grid
-
+from math import ceil, sqrt
 
 class Engine():
     def __init__(self, init_grid: Grid, generations : int):
@@ -14,16 +14,23 @@ class Engine():
             self.curr_gen += 1
         
     def visualize(self):
-        ROWS, COLS =(6,6)
+        dim = ceil(sqrt(self.generations))
+        ROWS, COLS =(dim, dim)
         fig, ax = plt.subplots(nrows=ROWS, ncols=COLS, figsize=(30,30))
     
         # Display the initial state in the first subplot
-        for x in range(ROWS):
-            for y in range(COLS):
+        for y in range(COLS):
+            for x in range(ROWS):
                 # print(self.history[x+y*COLS].to_matrix())
-                ax[x][y].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
-                ax[x][y].axis('off')
-                ax[x][y].set_title(f'generation {x+y*COLS}')
+                if (x+y*COLS > self.generations):       #TODO: FIX This 
+                    plt.show()         
+                    return None
+                # ax[x][y].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
+                # ax[x][y].axis('off')
+                # ax[x][y].set_title(f'generation {x+y*COLS}')    
+                ax[y][x].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
+                ax[y][x].axis('off')
+                ax[y][x].set_title(f'generation {x+y*COLS}')    
         
         plt.show()         
         return None

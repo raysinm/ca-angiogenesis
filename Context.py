@@ -1,4 +1,3 @@
-from collections import namedtuple
 from enum import Enum
 
 class ActionType(Enum):
@@ -8,7 +7,25 @@ class ContextRequest(Enum):
     ATTRACTION_IN_NEIGHBORHOOD = 1
     
 
-Point = namedtuple('Point', 'x y')
+class Point():
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+    def __sub__(self, other):
+        x = self.x - other.x
+        y = self.y - other.y
+        return Point(x, y)
+    def __add__(self, other):
+        x = self.x + other.x
+        y = self.y + other.y
+        return Point(x, y)
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+    def __hash__(self):
+        return hash((self.x, self.y))
+
 
 #* Grid gives cell context, cell returns to grid the actions it wants to make
 class GridContext():
