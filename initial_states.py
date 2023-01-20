@@ -2,6 +2,8 @@ from Context import Point
 
 Attractors_small = [Point(x=19, y=19), Point(x=18, y=19),
                     Point(x=19, y=18),Point(x=18, y=18),Point(x=17, y=18)]
+Attractors_small2 = [Point(x=14, y=14), Point(x=13, y=14),
+                    Point(x=14, y=13),Point(x=13, y=13),Point(x=12, y=13)]
 
 Attractors_big = [Point(x=45, y=45),
  Point(x=45, y=46),

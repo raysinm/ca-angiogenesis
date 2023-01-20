@@ -2,7 +2,7 @@ import numpy as np
 from copy import deepcopy, copy
 from typing import List
 import matplotlib.pyplot as plt
-
+from math import exp, sqrt
 
 from Cell import Cell, StalkCell, TipCell, AttractorCell
 from Context import GridContext, CellContext, Action, ActionType, Point, ContextRequest
@@ -51,15 +51,18 @@ class Grid:
                     ring = get_tile_radius_outer_ring(
                         Point(c.x, c.y), radius, self.width, self.height)
                     for point_tile in ring:
-                        self[point_tile].attraction = (tile_attraction-radius)
-    
+                        # self[point_tile].attraction = int((exp(-(sqrt(tile_attraction-radius)))))
+                        self[point_tile].attraction = int(tile_attraction*np.exp(-0.02*(radius**2)))
+            print(self.get_potential_matrix(), '\n')
+        self.visualize_potential_matrix()
+
     def get_potential_matrix(self):
         vec_func = np.vectorize(Tile.get_attraction)
         return vec_func(self.grid)
 
     def visualize_potential_matrix(self):
         pot_mat = self.get_potential_matrix()
-        plt.imshow(pot_mat)
+        plt.imshow(pot_mat, cmap='viridis')
 
     def next_gen(self):
         next_grid = deepcopy(self)
