@@ -1,12 +1,21 @@
+import json
+
 from Context import Point
+
+CONFIG = None
+with open("./config.json", "r") as config_file:
+    CONFIG = json.load(config_file)
+
+DEFAULTS = CONFIG["defaults"]
+
 def get_tile_neighborhood(location : Point, radius, max_width, max_height):
     pts =  lambda x, y : [Point(x2, y2) for x2 in range(x-radius, x+radius+1)
                             for y2 in range(y-radius, y+radius+1)
-                            if (-1 < x <= max_width and
-                                -1 < y <= max_height and
+                            if (-1 < x < max_width and
+                                -1 < y < max_height and
                                 (x != x2 or y != y2) and
-                                (0 <= x2 <= max_width) and
-                                (0 <= y2 <= max_height))]
+                                (0 <= x2 < max_width) and
+                                (0 <= y2 < max_height))]
     return pts(location.x, location.y)
 
 def get_tile_radius_outer_ring(location : Point, radius, max_width, max_height):
@@ -27,3 +36,4 @@ def get_tile_radius_outer_ring(location : Point, radius, max_width, max_height):
                             (0 <= y2 < max_height))]
     
     return set(horizontal(location.x, location.y) + vertical(location.x, location.y))
+

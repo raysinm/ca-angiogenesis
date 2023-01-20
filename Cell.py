@@ -1,18 +1,14 @@
-import json
 from collections import namedtuple
 from enum import Enum
 from random import uniform, choices
 from Context import GridContext, CellContext, Action, ActionType, ContextRequest, Point
+from utils import CONFIG
 
 
 class CellStatus(Enum):
     DEAD = 0
     ALIVE = 1
 
-
-CONFIG = None
-with open("./config.json", "r") as config_file:
-    CONFIG = json.load(config_file)
 
 
 class Cell:

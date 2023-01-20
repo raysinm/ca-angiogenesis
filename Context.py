@@ -26,6 +26,9 @@ class Point():
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def dist(self, other):
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
 
 #* Grid gives cell context, cell returns to grid the actions it wants to make
 class GridContext():

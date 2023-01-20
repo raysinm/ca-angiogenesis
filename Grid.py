@@ -6,7 +6,7 @@ from math import exp, sqrt
 
 from Cell import Cell, StalkCell, TipCell, AttractorCell
 from Context import GridContext, CellContext, Action, ActionType, Point, ContextRequest
-from utils import get_tile_radius_outer_ring
+from utils import get_tile_neighborhood, get_tile_radius_outer_ring, DEFAULTS
 
 
 class Tile:
@@ -33,26 +33,25 @@ class Grid:
 
     def init_grid_objects(self, init_config):
         if 'endothelial_cells' in init_config:
-            for c in init_config['endothelial_cells']:
-                self.grid[c.x][c.y].cell = StalkCell()
+            for ec in init_config['endothelial_cells']:
+                self[ec].cell = StalkCell()
 
         # TODO: REMOVE THIS. WE NEVER START WITH TIP CELLS, THIS IS ONLY FOR TESTING.
         if 'tip_cells' in init_config:
-            for c in init_config['tip_cells']:
-                self.grid[c.x][c.y].cell = TipCell()
+            for tip_cell in init_config['tip_cells']:
+                self[tip_cell].cell = TipCell()
 
         if 'attractor_cells' in init_config:
-            for c in init_config['attractor_cells']:  # Tissue / Organ / Tumor
-                self.grid[c.x][c.y].cell = AttractorCell()
-                cell_attraction = self.grid[c.x][c.y].cell.attraction_generated
-                self.grid[c.x][c.y].attraction += cell_attraction
-                tile_attraction = self.grid[c.x][c.y].attraction
-                for radius in range(1, min(tile_attraction, max(self.width, self.height))):
-                    ring = get_tile_radius_outer_ring(
-                        Point(c.x, c.y), radius, self.width, self.height)
-                    for point_tile in ring:
-                        # self[point_tile].attraction = int((exp(-(sqrt(tile_attraction-radius)))))
-                        self[point_tile].attraction = int(tile_attraction*np.exp(-0.02*(radius**2)))
+            for att_cell in init_config['attractor_cells']:  # Tissue / Organ / Tumor
+                self[att_cell].cell = AttractorCell()
+                self[att_cell].attraction += self[att_cell].cell.attraction_generated
+                src_attraction = self[att_cell].attraction
+
+                # get_tile_neighborhood currently doesn't use euclidean distance and might return a few extra tiles (depends on ceil/floor)
+                radius = int(np.ceil(np.log(src_attraction * (1/DEFAULTS["attraction"]["update_precision"])) / DEFAULTS["attraction"]["decay_coef"]))
+                for point in get_tile_neighborhood(location=att_cell, radius = radius, max_width = self.width, max_height = self.height):
+                    self[point].attraction = round(src_attraction * np.exp(-DEFAULTS["attraction"]["decay_coef"] * att_cell.dist(point)),1)
+ 
             print(self.get_potential_matrix(), '\n')
         self.visualize_potential_matrix()
 

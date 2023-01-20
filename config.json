@@ -3,8 +3,8 @@
         {"p_migrate" : 0.8, "attraction_generated" : 3}        
     ,
     "attractor_cell" : 
-        {"p_migrate" : 0, "attraction_generated" : 10},
-    "potential_gradient" : {}        
+        {"p_migrate" : 0, "attraction_generated" : 100},
+    "attraction" : {"decay_coef": 0.5, "update_precision": 0.001}        
     }   
 
 }
