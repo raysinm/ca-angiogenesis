@@ -90,8 +90,7 @@ class Grid:
         for action in actions:
             if action.type == ActionType.MIGRATE and action.dst != Point(0,0):
                 self[action.dst + cell_location].cell = self[cell_location].cell
-                self[cell_location].cell = None             #! BUG: shallow copy instead of deep is happening?
-                print(self[action.dst + cell_location].cell)
+                self[cell_location].cell = None             
                 # TODO: remember to update potential if tip moved
                 # undo all of the attractions
                 # redo

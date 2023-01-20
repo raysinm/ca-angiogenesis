@@ -30,15 +30,14 @@ class Cell:
     def is_alive(self):
         return self.status == CellStatus.ALIVE
 
-    def choose_direction(self, grid_context):
+    def choose_direction(self, grid_context) -> Point:
         direction = Point(0,0) # Default is no movement
         
         attractions = grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD]
-        print(attractions)
+        # print(attractions)
         attraction_sum = sum(attractions.values())
         if(attraction_sum): # If there is attraction
-            direction = choices(list(attractions.keys()), [val/attraction_sum for val in attractions.values()])
-
+            direction = choices(list(attractions.keys()), [val/attraction_sum for val in attractions.values()])[0]
         return direction
 
 
