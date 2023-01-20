@@ -1,9 +1,14 @@
-
+from collections import namedtuple
 from enum import Enum
 
 class ActionType(Enum):
-    KILL = 1
+    MIGRATE = 1
     DIVIDE = 2
+class ContextRequest(Enum):
+    ATTRACTION_IN_NEIGHBORHOOD = 1
+    
+
+Point = namedtuple('Point', 'x y')
 
 #* Grid gives cell context, cell returns to grid the actions it wants to make
 class GridContext():
@@ -16,7 +21,6 @@ class CellContext():
         self.radius_dead_neighbors = radius_dead_neighbors
         
 class Action():
-    def __init__(self):
-        self.src = self
-        self.dst = self
-        self.type = ActionType.KILL #for example   
+    def __init__(self, dst : Point, type : ActionType):
+        self.dst = dst
+        self.type = type

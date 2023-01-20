@@ -1,0 +1,8 @@
+{ "defaults":
+    {"tip_cell" : 
+        {"p_migrate" : 0.8, "attraction_generated" : 5}        
+    ,
+    "attractor_cell" : 
+        {"p_migrate" : 0, "attraction_generated" : 15}        
+    }   
+}

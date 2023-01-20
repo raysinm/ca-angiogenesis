@@ -1,39 +1,25 @@
+import json
 from collections import namedtuple
 from enum import Enum
-from Context import GridContext, CellContext, Action
+from random import uniform, choices
+from Context import GridContext, CellContext, Action, ActionType, ContextRequest
+
 
 class CellStatus(Enum):
     DEAD = 0
     ALIVE = 1
 
+
+CONFIG = None
+with open("./config.json", "r") as config_file:
+    CONFIG = json.load(config_file)
+
+
 class Cell:
-    def __init__(self):
+    def __init__(self, p_migrate=0, attraction_generated=0):
         self.status = CellStatus.ALIVE
-        # self.p_propagate = 0.5
-        # self.p_die = 0.5
-        # self.cycle = 1
-        # self.x, self.y = (x,y)
-        # self.max_cycle = max_cycle
-    
-    # def next(self):
-    #     if self.status != CellStatus.ALIVE: return (self.x, self.y)
-    #     self.update_probs()
-    #     if self.should_die():
-    #         return self.die()
-
-    #     self.cycle += 1
-    #     self.update_p()
-
-    #     if self.should_propagate():
-    #         return self.propagate()
-    #     else:
-    #         return (self.x, self.y) #Not right
-            
-    # def update_probs(self):
-    #     '''Update probabilities of this cell to divide or to die'''
-    #     if self.status == CellStatus.ALIVE:
-    #         if self.cycle >= self.max_cycle:
-    #             self.p_die = 1.0      
+        self.attraction_generated = attraction_generated
+        self.p_migrate = p_migrate
 
     def get_actions(self, grid_context: GridContext):
         return []
@@ -44,12 +30,41 @@ class Cell:
     def is_alive(self):
         return self.status == CellStatus.ALIVE
 
+    def choose_direction(self, grid_context):
+        direction = Point(1,1) # Default is no movement
+        # TODO: CHANGE EVERYTHING TO RELATIVE
+        
+        attractions = grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD]
+        attraction_sum = sum(attractions.values())
+        if(attraction_sum): # If there is attraction
+            direction = choices(list(attractions.keys()), [val/attraction_sum for val in attractions.values()])
+
+        return direction
+
+
+class TipCell(Cell):
+    def __init__(self, p_migrate=CONFIG["defaults"]["tip_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["tip_cell"]["attraction_generated"]):
+        Cell.__init__(self, p_migrate, attraction_generated)
+
+    def get_actions(self, grid_context: GridContext):
+        actions = []
+        # Migrate
+        if (self.should_migrate()):
+            actions.append(Action(dst=self.choose_direction(grid_context), type=ActionType.Migrate))
+        
+        return actions
+
+    def get_context(self):
+        return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD]
+
+    def should_migrate(self):
+        return uniform(0, 1) < self.p_migrate
+
+
 class StalkCell(Cell):
     pass
 
 
 class AttractorCell(Cell):
-    pass
-
-class TipCell(Cell):
-    pass
+    def __init__(self, p_migrate=CONFIG["defaults"]["attractor_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["attractor_cell"]["attraction_generated"]):
+        Cell.__init__(self, p_migrate, attraction_generated)
