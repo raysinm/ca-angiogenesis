@@ -1,4 +1,4 @@
-from Context import Point
+from utils import Point
 
 Attractors_small = [Point(x=19, y=19), Point(x=18, y=19),
                     Point(x=19, y=18),Point(x=18, y=18),Point(x=17, y=18)]

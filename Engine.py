@@ -28,7 +28,7 @@ class Engine():
                 # ax[x][y].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
                 # ax[x][y].axis('off')
                 # ax[x][y].set_title(f'generation {x+y*COLS}')    
-                ax[y][x].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
+                ax[y][x].imshow(self.history[x+y*COLS].to_matrix(), cmap='tab10')
                 ax[y][x].axis('off')
                 ax[y][x].set_title(f'generation {x+y*COLS}')    
         

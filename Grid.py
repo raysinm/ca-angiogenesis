@@ -3,11 +3,9 @@ from copy import deepcopy, copy
 from typing import List
 import matplotlib.pyplot as plt
 from math import exp, sqrt
-
 from Cell import Cell, StalkCell, TipCell, AttractorCell
-from Context import GridContext, CellContext, Action, ActionType, Point, ContextRequest
-from utils import get_tile_neighborhood, get_tile_radius_outer_ring, DEFAULTS
-
+from utils import get_tile_neighborhood, get_tile_radius_outer_ring, DEFAULTS, attraction_to_radius, attraction_decay, \
+    Action, ActionType, Point, ContextRequest, ModifierType
 
 class Tile:
     def __init__(self, attraction: int = 0, cell: Cell = None) -> None:
@@ -19,7 +17,6 @@ class Tile:
 
 
 class Grid:
-    # init_config: : Dict(str, List(Point)) --type hinting
     def __init__(self, width: int, height: int, init_config):
         self.height = height
         self.width = width
@@ -32,15 +29,15 @@ class Grid:
         self.grid[key.x][key.y] = value
 
     def init_grid_objects(self, init_config):
-        if 'endothelial_cells' in init_config:
-            for ec in init_config['endothelial_cells']:
-                self[ec].cell = StalkCell()
+        if 'stalk_cells' in init_config:
+            for stalk_cell in init_config['stalk_cells']:
+                self[stalk_cell].cell = StalkCell()
 
         # TODO: REMOVE THIS. WE NEVER START WITH TIP CELLS, THIS IS ONLY FOR TESTING.
         if 'tip_cells' in init_config:
             for tip_cell in init_config['tip_cells']:
                 self[tip_cell].cell = TipCell()
-
+                self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=tip_cell, neg_effect=False)
         if 'attractor_cells' in init_config:
             for att_cell in init_config['attractor_cells']:  # Tissue / Organ / Tumor
                 self[att_cell].cell = AttractorCell()
@@ -48,13 +45,25 @@ class Grid:
                 src_attraction = self[att_cell].attraction
 
                 # get_tile_neighborhood currently doesn't use euclidean distance and might return a few extra tiles (depends on ceil/floor)
-                radius = int(np.ceil(np.log(src_attraction * (1/DEFAULTS["attraction"]["update_precision"])) / DEFAULTS["attraction"]["decay_coef"]))
+                radius = attraction_to_radius(src_attraction)
                 for point in get_tile_neighborhood(location=att_cell, radius = radius, max_width = self.width, max_height = self.height):
-                    self[point].attraction = round(src_attraction * np.exp(-DEFAULTS["attraction"]["decay_coef"] * att_cell.dist(point)),1)
+                    self[point].attraction = attraction_decay(src_attraction, att_cell.dist(point))
  
-            print(self.get_potential_matrix(), '\n')
+            # print(self.get_potential_matrix(), '\n')
         self.visualize_potential_matrix()
 
+    def apply_modifier(self, type: ModifierType, cell_location: Point, neg_effect: bool = False):
+        if (type == ModifierType.ATTRACTION_MATRIX):
+            attraction_matrix = self[cell_location].cell.get_modifiers()[ModifierType.ATTRACTION_MATRIX]
+            if (neg_effect):
+                attraction_matrix = -attraction_matrix
+            radius = int(((attraction_matrix.shape[0]-1)/2))
+            att_matrix_center = Point(radius, radius)
+            for point in get_tile_neighborhood(location=cell_location, radius=radius , max_height=self.height, max_width=self.width):
+                matrix_point = att_matrix_center + (point - cell_location)
+
+                self[cell_location].attraction += attraction_matrix[matrix_point.x][matrix_point.y]
+        
     def get_potential_matrix(self):
         vec_func = np.vectorize(Tile.get_attraction)
         return vec_func(self.grid)
@@ -64,44 +73,66 @@ class Grid:
         plt.imshow(pot_mat, cmap='viridis')
 
     def next_gen(self):
-        next_grid = deepcopy(self)
+        actions = {}
         for x in range(self.height):
             for y in range(self.width):
-                cell = self.grid[x][y].cell
-                if (cell):
-                    cell_context = cell.get_context()
-                    actions = cell.get_actions(self.generate_context(
+                if (self.grid[x][y].cell):
+                    cell_context = self.grid[x][y].cell.get_context()
+                    actions[Point(x,y)] = self.grid[x][y].cell.get_actions(self.generate_context(
                                                cell_context=cell_context, cell_location=Point(x, y)))
-                    next_grid.exec_cell_actions(actions=actions, cell_location=Point(x, y))
+            
+        #! We first iterate over the original board to calculate all necessary changes \
+        # and update cell members. Then we copy the grid with updated members to new grid, and then act on it.    
+        next_grid = deepcopy(self)
+        for tile_actioned in actions:    
+            next_grid.exec_cell_actions(actions=actions[tile_actioned], cell_location=tile_actioned)
         return next_grid
 
-    def generate_context(self, cell_context: CellContext, cell_location: Point):
+    def generate_context(self, cell_context, cell_location: Point):
         grid_context = {}
         attractions = {}
 
         if (ContextRequest.ATTRACTION_IN_NEIGHBORHOOD in cell_context):
             for neighbor_tile in get_tile_radius_outer_ring(location=cell_location, radius=1, max_width=self.width, max_height=self.height):
-                
-                attractions[neighbor_tile - cell_location] = self[neighbor_tile].attraction
+                if(not self[neighbor_tile].cell):
+                    attractions[neighbor_tile - cell_location] = self[neighbor_tile].attraction
 
             grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD] = attractions
+
+        if (ContextRequest.NUM_NEIGHBORS in cell_context):
+            grid_context[ContextRequest.NUM_NEIGHBORS] = self.num_neighbors(cell_location)
+
 
         return grid_context
 
     def exec_cell_actions(self, actions: List[Action], cell_location: Point):
         for action in actions:
-            if action.type == ActionType.MIGRATE and action.dst != Point(0,0):
+            if action.type == ActionType.MIGRATE:
+                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
                 self[action.dst + cell_location].cell = self[cell_location].cell
-                self[cell_location].cell = None             
-                # TODO: remember to update potential if tip moved
-                # undo all of the attractions
-                # redo
+                self[cell_location].cell = None
+                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+
+            if action.type == ActionType.PROLIF:
+                self[action.dst + cell_location].cell = StalkCell()
 
     def to_matrix(self):
         output = np.zeros(shape=(self.height, self.width), dtype=int)
         for x in range(self.height):
             for y in range(self.width):
                 grid_cell = self.grid[x][y].cell
-                if grid_cell != None:
-                    output[x][y] = int(grid_cell.is_alive())
+                if type(grid_cell) == StalkCell:
+                    output[x][y] = 1
+                if type(grid_cell) == TipCell:
+                    output[x][y] = 2
+                if type(grid_cell) == AttractorCell:
+                    output[x][y] = 3
+
         return output
+
+    def num_neighbors(self, location : Point) -> int:
+        num = 0
+        for neighbor in get_tile_radius_outer_ring(location=location, radius=1, max_width=self.width, max_height=self.height):
+            num += int(self[neighbor].cell != None)
+
+        return num
