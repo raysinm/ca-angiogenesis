@@ -23,6 +23,8 @@ class Grid:
         self.grid = [[Tile() for i in range(width)] for j in range(height)]
         self.init_grid_objects(init_config)
 
+        self.taken_count = 0 #TODO: remove me
+
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
     def __setitem__(self, key:Point, value: Tile):
@@ -89,9 +91,7 @@ class Grid:
         neighbors_neighbors = {}
         if (ContextRequest.ATTRACTION_IN_NEIGHBORHOOD in cell_context):
             for neighbor_tile in get_tile_radius_outer_ring(location=cell_location, radius=1, max_width=self.width, max_height=self.height):
-                if(not self[neighbor_tile].cell):
-                    attractions[neighbor_tile - cell_location] = self[neighbor_tile].attraction
-
+                attractions[neighbor_tile - cell_location] = self[neighbor_tile].attraction
             grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD] = attractions
 
         if (ContextRequest.NUM_NEIGHBORS in cell_context):
@@ -99,8 +99,7 @@ class Grid:
 
         if (ContextRequest.NEIGHBORS_NEIGHBORS in cell_context):
             for neighbor_tile in get_tile_radius_outer_ring(location=cell_location, radius=1, max_width=self.width, max_height=self.height):
-                if(not self[neighbor_tile].cell):
-                    neighbors_neighbors[neighbor_tile - cell_location] = self.num_neighbors(neighbor_tile)
+                neighbors_neighbors[neighbor_tile - cell_location] = self.num_neighbors(neighbor_tile)
             grid_context[ContextRequest.NEIGHBORS_NEIGHBORS] = neighbors_neighbors
 
 
@@ -115,8 +114,13 @@ class Grid:
                 self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
 
             if action.type == ActionType.PROLIF:
-                self[action.dst + cell_location].cell = StalkCell()
-                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+                if(not self[action.dst + cell_location].cell):
+                    self[action.dst + cell_location].cell = StalkCell()
+                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+                else:
+                    self.taken_count += 1
+                    print(f"Taken: {self.taken_count}")
+                
 
 
     def to_matrix(self):
@@ -125,11 +129,11 @@ class Grid:
             for y in range(self.width):
                 grid_cell = self.grid[x][y].cell
                 if type(grid_cell) == StalkCell:
-                    output[x][y] = 1
-                if type(grid_cell) == TipCell:
                     output[x][y] = 2
+                if type(grid_cell) == TipCell:
+                    output[x][y] = 6
                 if type(grid_cell) == AttractorCell:
-                    output[x][y] = 3
+                    output[x][y] = 1
 
         return output
 

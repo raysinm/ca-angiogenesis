@@ -52,11 +52,11 @@ class Cell:
             direction = choices(options, probs)[0]
         
         # Debug prints 
-        if(type(self) == TipCell and attraction_sum):
-            new_attr = deepcopy(attractions)
-            for attr in new_attr:
-                new_attr[attr] = round(new_attr[attr]**10/attraction_sum**10 ,3)
-            print(f"Cell: {self.id}, decision: {direction},{round(attractions[direction]**10/attraction_sum**10, 3)} out of {new_attr}, \n total {attractions} \n")
+        # if(type(self) == TipCell and attraction_sum):
+        #     new_attr = deepcopy(attractions)
+        #     for attr in new_attr:
+        #         new_attr[attr] = round(new_attr[attr]**10/attraction_sum**10 ,3)
+        #     print(f"Cell: {self.id}, decision: {direction},{round(attractions[direction]**10/attraction_sum**10, 3)} out of {new_attr}, \n total {attractions} \n")
 
 
         return direction
@@ -107,8 +107,7 @@ class StalkCell(Cell):
         return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context), ActionType.PROLIF)
 
     def should_prolif(self, grid_context):
-        num_neighbors = grid_context[ContextRequest.NUM_NEIGHBORS]
-        cond_p_prolif = uniform(0, 1) < self.p_prolif * (1/((num_neighbors**2)+1))
+        cond_p_prolif = uniform(0, 1) < self.p_prolif
         cond_max_prolif = self.count_prolif < CONFIG["defaults"]["stalk_cell"]["max_prolif_times"]
         cond_combined = cond_max_prolif and cond_p_prolif
         if cond_combined:
