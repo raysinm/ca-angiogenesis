@@ -72,7 +72,6 @@ class Cell:
     def init_attraction_matrix(self):
         radius = attraction_to_radius(self.attraction_generated)
         center = Point(radius, radius)
-        print(f"{radius}")
         mat = np.zeros(shape=((2*radius)+1, (2*radius)+1), dtype=float)  #! 2*radius+1 because we want the center to be the cell itself
         for (x,y), attraction in np.ndenumerate(mat):
                 mat[x][y] = attraction_decay(self.attraction_generated, Point(x,y).dist(center)) 
@@ -95,24 +94,33 @@ class TipCell(Cell):
 
 
 class StalkCell(Cell):
-    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_branch=CONFIG["defaults"]["stalk_cell"]["p_branch"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
+    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_sprout=CONFIG["defaults"]["stalk_cell"]["p_sprout"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
         Cell.__init__(self, p_prolif=p_prolif)
-        self.p_branch = p_branch
+        self.p_sprout = p_sprout
         self.count_prolif = 0
 
     def get_context(self):
         return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NUM_NEIGHBORS, ContextRequest.NEIGHBORS_NEIGHBORS]
 
     def get_actions(self, grid_context):
-        return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context), ActionType.PROLIF)
+        action = ActionType.PROLIF
+        if(self.should_sprout()):
+            action = ActionType.SPROUT
+            
+        return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context, action), action)
 
-    def should_prolif(self, grid_context):
+    def should_prolif(self, grid_context, action : ActionType):
+        is_sprout = (action == ActionType.SPROUT)
         cond_p_prolif = uniform(0, 1) < self.p_prolif
         cond_max_prolif = self.count_prolif < CONFIG["defaults"]["stalk_cell"]["max_prolif_times"]
-        cond_combined = cond_max_prolif and cond_p_prolif
-        if cond_combined:
+        cond_combined = (cond_max_prolif or is_sprout) and cond_p_prolif
+        if cond_combined and not is_sprout:
             self.count_prolif += 1
         return cond_combined
+    
+    def should_sprout(self):
+        return (uniform(0,1) < self.p_sprout)
+
 
 class AttractorCell(Cell):
     def __init__(self, p_migrate=CONFIG["defaults"]["attractor_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["attractor_cell"]["attraction_generated"]):

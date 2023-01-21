@@ -23,8 +23,6 @@ class Grid:
         self.grid = [[Tile() for i in range(width)] for j in range(height)]
         self.init_grid_objects(init_config)
 
-        self.taken_count = 0 #TODO: remove me
-
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
     def __setitem__(self, key:Point, value: Tile):
@@ -46,9 +44,6 @@ class Grid:
             for att_cell in init_config['attractor_cells']:  # Tissue / Organ / Tumor
                 self[att_cell].cell = AttractorCell()
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=att_cell, neg_effect=False)
-
-            # print(self.get_potential_matrix(), '\n')
-        self.visualize_potential_matrix()
 
     def apply_modifier(self, type: ModifierType, cell_location: Point, neg_effect: bool = False):
         if (type == ModifierType.ATTRACTION_MATRIX):
@@ -108,20 +103,21 @@ class Grid:
     def exec_cell_actions(self, actions: List[Action], cell_location: Point):
         for action in actions:
             if action.type == ActionType.MIGRATE:
-                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
-                self[action.dst + cell_location].cell = self[cell_location].cell
-                self[cell_location].cell = None
-                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+                if(not self[action.dst + cell_location].cell): 
+                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
+                    self[action.dst + cell_location].cell = self[cell_location].cell
+                    self[cell_location].cell = None
+                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
 
             if action.type == ActionType.PROLIF:
                 if(not self[action.dst + cell_location].cell):
                     self[action.dst + cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
-                else:
-                    self.taken_count += 1
-                    print(f"Taken: {self.taken_count}")
-                
 
+            if action.type == ActionType.SPROUT:
+                if(not self[action.dst + cell_location].cell):
+                    self[action.dst + cell_location].cell = TipCell(id=-1)
+                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
 
     def to_matrix(self):
         output = np.zeros(shape=(self.height, self.width), dtype=int)
@@ -131,9 +127,9 @@ class Grid:
                 if type(grid_cell) == StalkCell:
                     output[x][y] = 2
                 if type(grid_cell) == TipCell:
-                    output[x][y] = 6
-                if type(grid_cell) == AttractorCell:
                     output[x][y] = 1
+                if type(grid_cell) == AttractorCell:
+                    output[x][y] = 6
 
         return output
 
