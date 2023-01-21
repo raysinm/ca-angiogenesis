@@ -4,6 +4,7 @@ Attractors_small = [Point(x=19, y=19), Point(x=18, y=19),
                     Point(x=19, y=18),Point(x=18, y=18),Point(x=17, y=18)]
 Attractors_small2 = [Point(x=14, y=14), Point(x=13, y=14),
                     Point(x=14, y=13),Point(x=13, y=13),Point(x=12, y=13)]
+Attractors_small3 = [Point(29,0), Point(29,1), Point(29,2), Point(29,3), Point(29,4), Point(29,5), Point(29,6), Point(29,7), Point(29,8)]
 
 Attractors_big = [Point(x=45, y=45),
  Point(x=45, y=46),

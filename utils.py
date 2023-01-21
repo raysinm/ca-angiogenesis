@@ -56,12 +56,12 @@ def attraction_decay(src_attraction : float, dist: float):
     attraction = src_attraction * np.exp(-DEFAULTS["attraction"]["decay_coef"] * dist)
     return attraction
 
-def get_tile_neighborhood(location : Point, radius, max_width, max_height):
+def get_tile_neighborhood(location : Point, radius, max_width, max_height, include_self = False):
     pts =  lambda x, y : [Point(x2, y2) for x2 in range(x-radius, x+radius+1)
                             for y2 in range(y-radius, y+radius+1)
                             if (-1 < x < max_width and
                                 -1 < y < max_height and
-                                (x != x2 or y != y2) and
+                                ((x != x2 or y != y2) or include_self) and
                                 (0 <= x2 < max_width) and
                                 (0 <= y2 < max_height))]
     return pts(location.x, location.y)

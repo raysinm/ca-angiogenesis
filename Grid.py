@@ -35,20 +35,15 @@ class Grid:
 
         # TODO: REMOVE THIS. WE NEVER START WITH TIP CELLS, THIS IS ONLY FOR TESTING.
         if 'tip_cells' in init_config:
-            for tip_cell in init_config['tip_cells']:
-                self[tip_cell].cell = TipCell()
+            for i, tip_cell in enumerate(init_config['tip_cells']):
+                self[tip_cell].cell = TipCell(id=i)
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=tip_cell, neg_effect=False)
+
         if 'attractor_cells' in init_config:
             for att_cell in init_config['attractor_cells']:  # Tissue / Organ / Tumor
                 self[att_cell].cell = AttractorCell()
-                self[att_cell].attraction += self[att_cell].cell.attraction_generated
-                src_attraction = self[att_cell].attraction
+                self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=att_cell, neg_effect=False)
 
-                # get_tile_neighborhood currently doesn't use euclidean distance and might return a few extra tiles (depends on ceil/floor)
-                radius = attraction_to_radius(src_attraction)
-                for point in get_tile_neighborhood(location=att_cell, radius = radius, max_width = self.width, max_height = self.height):
-                    self[point].attraction = attraction_decay(src_attraction, att_cell.dist(point))
- 
             # print(self.get_potential_matrix(), '\n')
         self.visualize_potential_matrix()
 
@@ -59,10 +54,9 @@ class Grid:
                 attraction_matrix = -attraction_matrix
             radius = int(((attraction_matrix.shape[0]-1)/2))
             att_matrix_center = Point(radius, radius)
-            for point in get_tile_neighborhood(location=cell_location, radius=radius , max_height=self.height, max_width=self.width):
+            for point in get_tile_neighborhood(location=cell_location, radius=radius , max_height=self.height, max_width=self.width, include_self=True):
                 matrix_point = att_matrix_center + (point - cell_location)
-
-                self[cell_location].attraction += attraction_matrix[matrix_point.x][matrix_point.y]
+                self[point].attraction += attraction_matrix[matrix_point.x][matrix_point.y]
         
     def get_potential_matrix(self):
         vec_func = np.vectorize(Tile.get_attraction)
