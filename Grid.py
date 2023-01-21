@@ -32,6 +32,7 @@ class Grid:
         if 'stalk_cells' in init_config:
             for stalk_cell in init_config['stalk_cells']:
                 self[stalk_cell].cell = StalkCell()
+                self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=stalk_cell, neg_effect=False)
 
         # TODO: REMOVE THIS. WE NEVER START WITH TIP CELLS, THIS IS ONLY FOR TESTING.
         if 'tip_cells' in init_config:
@@ -85,7 +86,7 @@ class Grid:
     def generate_context(self, cell_context, cell_location: Point):
         grid_context = {}
         attractions = {}
-
+        neighbors_neighbors = {}
         if (ContextRequest.ATTRACTION_IN_NEIGHBORHOOD in cell_context):
             for neighbor_tile in get_tile_radius_outer_ring(location=cell_location, radius=1, max_width=self.width, max_height=self.height):
                 if(not self[neighbor_tile].cell):
@@ -95,6 +96,12 @@ class Grid:
 
         if (ContextRequest.NUM_NEIGHBORS in cell_context):
             grid_context[ContextRequest.NUM_NEIGHBORS] = self.num_neighbors(cell_location)
+
+        if (ContextRequest.NEIGHBORS_NEIGHBORS in cell_context):
+            for neighbor_tile in get_tile_radius_outer_ring(location=cell_location, radius=1, max_width=self.width, max_height=self.height):
+                if(not self[neighbor_tile].cell):
+                    neighbors_neighbors[neighbor_tile - cell_location] = self.num_neighbors(neighbor_tile)
+            grid_context[ContextRequest.NEIGHBORS_NEIGHBORS] = neighbors_neighbors
 
 
         return grid_context
@@ -109,6 +116,8 @@ class Grid:
 
             if action.type == ActionType.PROLIF:
                 self[action.dst + cell_location].cell = StalkCell()
+                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+
 
     def to_matrix(self):
         output = np.zeros(shape=(self.height, self.width), dtype=int)

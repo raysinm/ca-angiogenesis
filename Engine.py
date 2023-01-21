@@ -11,6 +11,8 @@ class Engine():
     def run(self):
         for i in range(self.generations):
             self.history.append(self.history[-1].next_gen())
+            self.history[-1].visualize_potential_matrix()
+
             self.curr_gen += 1
         
     def visualize(self):

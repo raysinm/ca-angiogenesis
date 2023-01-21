@@ -14,6 +14,7 @@ class ActionType(Enum):
 class ContextRequest(Enum):
     ATTRACTION_IN_NEIGHBORHOOD = 1
     NUM_NEIGHBORS = 2
+    NEIGHBORS_NEIGHBORS = 3
     
 class ModifierType(Enum):
     ATTRACTION_MATRIX = 1
@@ -49,7 +50,7 @@ class Action():
 def attraction_to_radius(attraction: float):
     radius = 0
     if (attraction != 0):
-        radius = int(np.ceil(np.log(attraction * (1/DEFAULTS["attraction"]["update_precision"])) / DEFAULTS["attraction"]["decay_coef"]))
+        radius = int(np.ceil(np.log(np.abs(attraction) * (1/DEFAULTS["attraction"]["update_precision"])) / DEFAULTS["attraction"]["decay_coef"]))
     return radius
 
 def attraction_decay(src_attraction : float, dist: float):

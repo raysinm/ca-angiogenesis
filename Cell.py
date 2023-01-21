@@ -37,13 +37,28 @@ class Cell:
         
         attraction_sum = sum(attractions.values())
         if (attraction_sum):  # If there is attraction
-            direction = choices(list(attractions.keys()), [
-                                val**10/attraction_sum**10 for val in attractions.values()])[0]
+            options = []
+            probs = []
+            for neighbor_tile in attractions:
+                options.append(neighbor_tile)
+                attraction = attractions[neighbor_tile]
+                if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
+                    num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
+                    probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
+                else:
+                    probs.append((attraction)**10 / attraction_sum**10)
+
+
+            direction = choices(options, probs)[0]
+        
+        # Debug prints 
         if(type(self) == TipCell and attraction_sum):
             new_attr = deepcopy(attractions)
             for attr in new_attr:
-                new_attr[attr] = round(new_attr[attr]**10/attraction_sum**10,3)
+                new_attr[attr] = round(new_attr[attr]**10/attraction_sum**10 ,3)
             print(f"Cell: {self.id}, decision: {direction},{round(attractions[direction]**10/attraction_sum**10, 3)} out of {new_attr}, \n total {attractions} \n")
+
+
         return direction
 
     def generate_actions_by_attraction(self, grid_context, cond : bool, action_type: ActionType):
@@ -80,13 +95,13 @@ class TipCell(Cell):
 
 
 class StalkCell(Cell):
-    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_branch=CONFIG["defaults"]["stalk_cell"]["p_branch"]):
+    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_branch=CONFIG["defaults"]["stalk_cell"]["p_branch"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
         Cell.__init__(self, p_prolif=p_prolif)
         self.p_branch = p_branch
         self.count_prolif = 0
 
     def get_context(self):
-        return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NUM_NEIGHBORS]
+        return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NUM_NEIGHBORS, ContextRequest.NEIGHBORS_NEIGHBORS]
 
     def get_actions(self, grid_context):
         return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context), ActionType.PROLIF)
