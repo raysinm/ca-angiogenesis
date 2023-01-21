@@ -1,11 +1,11 @@
 { "defaults":
     {"tip_cell" : 
-        {"p_migrate" : 0.7, "attraction_generated" : 50 }        
+        {"p_migrate" : 0.7, "attraction_generated" : 30 , "attraction_sensitivity" : 10}        
     ,
     "attractor_cell" : 
         {"p_migrate" : 0, "attraction_generated" : 500},
     "stalk_cell" : 
-        {"p_prolif" : 0.6, "p_sprout" : 0.006, "max_prolif_times": 1, "attraction_generated" : 0},
+        {"p_prolif" : 0.01, "p_sprout" : 0.02, "max_prolif_times": 1, "attraction_generated" : 0, "attraction_sensitivity" : 10},
     "attraction" : {"decay_coef": 0.1, "update_precision": 0.001}        
     }   
 

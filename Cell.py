@@ -11,11 +11,12 @@ class CellStatus(Enum):
 
 
 class Cell:
-    def __init__(self, id=-1, p_migrate=0, p_prolif=0, attraction_generated=0):
+    def __init__(self, id=-1, p_migrate=0, p_prolif=0, attraction_generated=0, attraction_sensitivity=1):
         self.id = id
         self.attraction_generated = attraction_generated
         self.p_migrate = p_migrate
         self.p_prolif = p_prolif
+        self.attraction_sensitivity = attraction_sensitivity
         self.attraction_matrix = self.init_attraction_matrix()
 
     def get_actions(self, grid_context: dict):
@@ -44,9 +45,9 @@ class Cell:
                 attraction = attractions[neighbor_tile]
                 if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
                     num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
-                    probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
+                    probs.append((attraction/num_neighbors_neighbors)**self.attraction_sensitivity / attraction_sum**self.attraction_sensitivity)
                 else:
-                    probs.append((attraction)**10 / attraction_sum**10)
+                    probs.append((attraction)**self.attraction_sensitivity / attraction_sum**self.attraction_sensitivity)
 
 
             direction = choices(options, probs)[0]
@@ -61,7 +62,7 @@ class Cell:
 
         return direction
 
-    def generate_actions_by_attraction(self, grid_context, cond : bool, action_type: ActionType):
+    def generate_action_by_attraction(self, grid_context, cond : bool, action_type: ActionType):
         actions = []
         if (cond):
             direction = self.choose_direction(grid_context)
@@ -79,12 +80,13 @@ class Cell:
 
 
 class TipCell(Cell):
-    def __init__(self, id, p_migrate=CONFIG["defaults"]["tip_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["tip_cell"]["attraction_generated"]):
+    def __init__(self, id, p_migrate=CONFIG["defaults"]["tip_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["tip_cell"]["attraction_generated"], \
+         attraction_sensitivity=CONFIG["defaults"]["tip_cell"]["attraction_sensitivity"]):
         Cell.__init__(self, id=id, p_migrate=p_migrate,
-                      attraction_generated=attraction_generated)
+                      attraction_generated=attraction_generated, attraction_sensitivity=attraction_sensitivity)
 
     def get_actions(self, grid_context):
-        return self.generate_actions_by_attraction(grid_context=grid_context, cond=self.should_migrate(), action_type=ActionType.MIGRATE)
+        return self.generate_action_by_attraction(grid_context=grid_context, cond=self.should_migrate(), action_type=ActionType.MIGRATE)
 
     def get_context(self):
         return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD]
@@ -94,8 +96,9 @@ class TipCell(Cell):
 
 
 class StalkCell(Cell):
-    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_sprout=CONFIG["defaults"]["stalk_cell"]["p_sprout"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
-        Cell.__init__(self, p_prolif=p_prolif)
+    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_sprout=CONFIG["defaults"]["stalk_cell"]["p_sprout"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"], \
+        attraction_sensitivity= CONFIG["defaults"]["stalk_cell"]["attraction_sensitivity"]):
+        Cell.__init__(self, p_prolif=p_prolif, attraction_sensitivity = attraction_sensitivity)
         self.p_sprout = p_sprout
         self.count_prolif = 0
 
@@ -103,22 +106,30 @@ class StalkCell(Cell):
         return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NUM_NEIGHBORS, ContextRequest.NEIGHBORS_NEIGHBORS]
 
     def get_actions(self, grid_context):
-        action = ActionType.PROLIF
-        if(self.should_sprout()):
-            action = ActionType.SPROUT
-            
-        return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context, action), action)
+        is_prolif =self.should_prolif(grid_context)
 
-    def should_prolif(self, grid_context, action : ActionType):
-        is_sprout = (action == ActionType.SPROUT)
-        cond_p_prolif = uniform(0, 1) < self.p_prolif
-        cond_max_prolif = self.count_prolif < CONFIG["defaults"]["stalk_cell"]["max_prolif_times"]
-        cond_combined = (cond_max_prolif or is_sprout) and cond_p_prolif
-        if cond_combined and not is_sprout:
+        actions = self.generate_action_by_attraction(grid_context, is_prolif, ActionType.PROLIF) 
+        # actions += self.generate_action_by_attraction(grid_context, self.should_prolif(grid_context, action), ActionType.SPROUT) # ! Might need prolif and sprout dependence
+        actions += self.generate_action_by_attraction(grid_context, self.should_sprout(grid_context), ActionType.SPROUT) 
+            
+        return actions
+
+    def should_prolif(self, grid_context):
+        min_modify = 0.1
+        max_modify = 10
+        rel_best_attraction = CONFIG["defaults"]["tip_cell"]["attraction_generated"]
+        modify = lambda attraction: ((max_modify-min_modify)/rel_best_attraction)*attraction + min_modify
+        
+        attraction_in_neighborhood = max(grid_context[ContextRequest.ATTRACTION_IN_NEIGHBORHOOD].values())
+        
+        cond_p_prolif = uniform(0, 1) < self.p_prolif * modify(attraction_in_neighborhood)
+        cond_max_prolif = self.count_prolif < CONFIG["defaults"]["stalk_cell"]["max_prolif_times"]    # ! MIGHT SOLVE BLOBIZATION
+        cond_combined = (cond_max_prolif) and cond_p_prolif
+        if cond_combined:
             self.count_prolif += 1
         return cond_combined
     
-    def should_sprout(self):
+    def should_sprout(self, grid_context):
         return (uniform(0,1) < self.p_sprout)
 
 
