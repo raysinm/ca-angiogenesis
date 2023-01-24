@@ -44,7 +44,8 @@ class Cell:
                 attraction = attractions[neighbor_tile]
                 if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
                     num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
-                    probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
+                    # probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
+                    probs.append((attraction)**10 / attraction_sum**10)
                 else:
                     probs.append((attraction)**10 / attraction_sum**10)
 
@@ -72,7 +73,7 @@ class Cell:
     def init_attraction_matrix(self):
         radius = attraction_to_radius(self.attraction_generated)
         center = Point(radius, radius)
-        print(f"{radius}")
+        # print(f"{radius}")
         mat = np.zeros(shape=((2*radius)+1, (2*radius)+1), dtype=float)  #! 2*radius+1 because we want the center to be the cell itself
         for (x,y), attraction in np.ndenumerate(mat):
                 mat[x][y] = attraction_decay(self.attraction_generated, Point(x,y).dist(center)) 
