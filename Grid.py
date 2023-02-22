@@ -45,6 +45,9 @@ class Grid:
                 self[att_cell].cell = AttractorCell()
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=att_cell, neg_effect=False)
 
+            # print(self.get_potential_matrix(), '\n')
+        self.visualize_potential_matrix()
+
     def apply_modifier(self, type: ModifierType, cell_location: Point, neg_effect: bool = False):
         if (type == ModifierType.ATTRACTION_MATRIX):
             attraction_matrix = self[cell_location].cell.get_modifiers()[ModifierType.ATTRACTION_MATRIX]
@@ -62,7 +65,7 @@ class Grid:
 
     def visualize_potential_matrix(self):
         pot_mat = self.get_potential_matrix()
-        plt.imshow(pot_mat, cmap='viridis')
+        plt.imshow(pot_mat, cmap='viridis', vmin=0, vmax=1800)
 
     def next_gen(self):
         actions = {}
@@ -103,7 +106,8 @@ class Grid:
     def exec_cell_actions(self, actions: List[Action], cell_location: Point):
         for action in actions:
             if action.type == ActionType.MIGRATE:
-                if(not self[action.dst + cell_location].cell): 
+                
+                if(not self[action.dst + cell_location].cell):
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
                     self[action.dst + cell_location].cell = self[cell_location].cell
                     self[cell_location].cell = None
@@ -113,23 +117,24 @@ class Grid:
                 if(not self[action.dst + cell_location].cell):
                     self[action.dst + cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+              
 
-            if action.type == ActionType.SPROUT:
-                if(not self[action.dst + cell_location].cell):
-                    self[action.dst + cell_location].cell = TipCell(id=-1)
-                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
 
     def to_matrix(self):
-        output = np.zeros(shape=(self.height, self.width), dtype=int)
+        # np.full((width, height), 7)
+        output = np.full(shape=(self.height, self.width), fill_value=0, dtype=float)
         for x in range(self.height):
             for y in range(self.width):
+                # output[x][y] = 7
                 grid_cell = self.grid[x][y].cell
                 if type(grid_cell) == StalkCell:
-                    output[x][y] = 2
-                if type(grid_cell) == TipCell:
                     output[x][y] = 1
+                if type(grid_cell) == TipCell:
+                    output[x][y] = 2
                 if type(grid_cell) == AttractorCell:
-                    output[x][y] = 6
+                    output[x][y] = 3
+                
+                    
 
         return output
 
