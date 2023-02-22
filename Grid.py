@@ -110,14 +110,19 @@ class Grid:
                 if(not self[action.dst + cell_location].cell):
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
                     self[action.dst + cell_location].cell = self[cell_location].cell
-                    self[cell_location].cell = None
+                    self[cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
 
             if action.type == ActionType.PROLIF:
                 if(not self[action.dst + cell_location].cell):
                     self[action.dst + cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
-              
+            
+            if action.type == ActionType.SPROUT:
+                if(not self[action.dst + cell_location].cell):
+                    self[action.dst + cell_location].cell = TipCell(1)
+            
+
 
 
     def to_matrix(self):

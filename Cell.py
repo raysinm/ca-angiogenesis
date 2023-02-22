@@ -44,8 +44,8 @@ class Cell:
                 attraction = attractions[neighbor_tile]
                 if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
                     num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
-                    # probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
-                    probs.append((attraction)**10 / attraction_sum**10)
+                    probs.append((attraction/num_neighbors_neighbors**3)**10 / attraction_sum**10)
+                    #probs.append((attraction)**10 / attraction_sum**10)
                 else:
                     probs.append((attraction)**10 / attraction_sum**10)
 
@@ -96,16 +96,17 @@ class TipCell(Cell):
 
 
 class StalkCell(Cell):
-    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_branch=CONFIG["defaults"]["stalk_cell"]["p_branch"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
+    def __init__(self, p_prolif=CONFIG["defaults"]["stalk_cell"]["p_prolif"], p_sprout=CONFIG["defaults"]["stalk_cell"]["p_sprout"], attraction_generated=CONFIG["defaults"]["stalk_cell"]["attraction_generated"]):
         Cell.__init__(self, p_prolif=p_prolif)
-        self.p_branch = p_branch
+        self.p_sprout = p_sprout
         self.count_prolif = 0
+        
 
     def get_context(self):
         return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NUM_NEIGHBORS, ContextRequest.NEIGHBORS_NEIGHBORS]
 
     def get_actions(self, grid_context):
-        return self.generate_actions_by_attraction(grid_context, self.should_prolif(grid_context), ActionType.PROLIF)
+        return self.generate_actions_by_attraction(grid_context, self.should_sprout(grid_context), ActionType.SPROUT)
 
     def should_prolif(self, grid_context):
         cond_p_prolif = uniform(0, 1) < self.p_prolif
@@ -114,6 +115,10 @@ class StalkCell(Cell):
         if cond_combined:
             self.count_prolif += 1
         return cond_combined
+    
+    def should_sprout(self, grid_context):
+        return (uniform(0,1) < self.p_sprout)
+
 
 class AttractorCell(Cell):
     def __init__(self, p_migrate=CONFIG["defaults"]["attractor_cell"]["p_migrate"], attraction_generated=CONFIG["defaults"]["attractor_cell"]["attraction_generated"]):

@@ -11,6 +11,7 @@ DEFAULTS = CONFIG["defaults"]
 class ActionType(Enum):
     MIGRATE = 1
     PROLIF = 2
+    SPROUT = 3
 class ContextRequest(Enum):
     ATTRACTION_IN_NEIGHBORHOOD = 1
     NUM_NEIGHBORS = 2
