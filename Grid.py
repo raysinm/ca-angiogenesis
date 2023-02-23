@@ -107,11 +107,13 @@ class Grid:
         for action in actions:
             if action.type == ActionType.MIGRATE:
                 
+                self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
                 if(not self[action.dst + cell_location].cell):
-                    self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=cell_location, neg_effect= True)
                     self[action.dst + cell_location].cell = self[cell_location].cell
-                    self[cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+                
+                self[cell_location].cell = StalkCell()
+                
 
             if action.type == ActionType.PROLIF:
                 if(not self[action.dst + cell_location].cell):
