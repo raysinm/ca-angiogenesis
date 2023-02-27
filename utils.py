@@ -8,6 +8,50 @@ with open("./config.json", "r") as config_file:
 
 DEFAULTS = CONFIG["defaults"]
 
+        
+class GridStatistics():
+    def __init__(self, num_cells=0, num_tip=0, num_stalk=0, num_attractor=0, avg_num_neighbors=0):
+        self.num_cells = num_cells
+        self.num_tip = num_tip
+        self.num_stalk = num_stalk
+        self.num_attractor = num_attractor
+        self.avg_num_neighbors = avg_num_neighbors
+    
+    def add_tip_cell(self):
+        self.num_cells += 1
+        self.num_tip += 1
+    
+    def add_stalk_cell(self):
+        self.num_cells += 1
+        self.num_stalk += 1
+    def add_attractor_cell(self):
+        self.num_cells += 1
+        self.num_attractor += 1
+
+    def __add__(self, other_stats):
+        num_cells = self.num_cells + other_stats.num_cells
+        num_tip = self.num_tip + other_stats.num_tips
+        num_stalk = self.num_stalk + other_stats.num_stalk
+        num_attractor = self.num_attractor + other_stats.num_attractor
+        return GridStatistics(num_cells, num_tip, num_stalk, num_attractor)
+    
+class EngineStatistics():
+    def __init__(self, num_generations:int = 0):
+        self.num_generations = num_generations
+        self.num_cell_history = np.zeros(shape=num_generations)
+        self.num_tip_history = np.zeros(shape=num_generations)
+        self.num_stalk_history = np.zeros(shape=num_generations)
+        
+    def update(self, gen:int, stats:GridStatistics) ->None: 
+        self.num_cell_history[gen] = stats.num_cells
+        self.num_tip_history[gen] = stats.num_tip
+        self.num_stalk_history[gen] = stats.num_stalk
+        return
+    
+    def __str__(self) -> str:
+        return f"Number of cells throught generations:\n{self.num_cell_history}\nNumber of TIP cells throught generations:\n{self.num_tip_history}\n \
+    Number of STALK cells throught generations:\n{self.num_stalk_history}\n"
+
 class ActionType(Enum):
     MIGRATE = 1
     PROLIF = 2

@@ -4,7 +4,7 @@ from typing import List
 import matplotlib.pyplot as plt
 from math import exp, sqrt
 from Cell import Cell, StalkCell, TipCell, AttractorCell
-from utils import get_tile_neighborhood, get_tile_radius_outer_ring, DEFAULTS, attraction_to_radius, attraction_decay, \
+from utils import GridStatistics, get_tile_neighborhood, get_tile_radius_outer_ring, DEFAULTS, attraction_to_radius, attraction_decay, \
     Action, ActionType, Point, ContextRequest, ModifierType
 
 class Tile:
@@ -21,7 +21,20 @@ class Grid:
         self.height = height
         self.width = width
         self.grid = [[Tile() for i in range(width)] for j in range(height)]
+        self.stats = GridStatistics()
         self.init_grid_objects(init_config)
+
+    def get_width(self):
+        return self.width
+    
+    def get_height(self):
+        return self.height
+    
+    def get_stats(self) ->GridStatistics:
+        return self.stats
+    
+    def get_area(self):
+        return self.width*self.height
 
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
@@ -33,17 +46,20 @@ class Grid:
             for stalk_cell in init_config['stalk_cells']:
                 self[stalk_cell].cell = StalkCell()
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=stalk_cell, neg_effect=False)
+                self.stats.add_stalk_cell()
 
         # TODO: REMOVE THIS. WE NEVER START WITH TIP CELLS, THIS IS ONLY FOR TESTING.
         if 'tip_cells' in init_config:
             for i, tip_cell in enumerate(init_config['tip_cells']):
                 self[tip_cell].cell = TipCell(id=i)
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=tip_cell, neg_effect=False)
+                self.stats.add_tip_cell()
 
         if 'attractor_cells' in init_config:
             for att_cell in init_config['attractor_cells']:  # Tissue / Organ / Tumor
                 self[att_cell].cell = AttractorCell()
                 self.apply_modifier(type=ModifierType.ATTRACTION_MATRIX, cell_location=att_cell, neg_effect=False)
+                self.stats.add_attractor_cell()
 
             # print(self.get_potential_matrix(), '\n')
         self.visualize_potential_matrix()
@@ -113,16 +129,20 @@ class Grid:
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
                 
                 self[cell_location].cell = StalkCell()
+                self.stats.add_stalk_cell()
                 
 
             if action.type == ActionType.PROLIF:
                 if(not self[action.dst + cell_location].cell):
                     self[action.dst + cell_location].cell = StalkCell()
                     self.apply_modifier(type = ModifierType.ATTRACTION_MATRIX, cell_location=(action.dst + cell_location), neg_effect= False)
+                    self.stats.add_stalk_cell()
+
             
             if action.type == ActionType.SPROUT:
                 if(not self[action.dst + cell_location].cell):
                     self[action.dst + cell_location].cell = TipCell(1)
+                    self.stats.add_tip_cell()
             
 
 
