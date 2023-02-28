@@ -50,9 +50,14 @@ class Engine():
                 ax[y][x].axis('off')
                 ax[y][x].set_title(f'Generation {x+y*COLS}')    
         
-        plt.show()         
-
-        ## SAVING IMAGES:
+        plt.show()        
+        return None
+    
+    def save_results(self):
+         ## SAVING IMAGES:
+        import matplotlib.colors as mcolors
+        colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
+        cmap = mcolors.ListedColormap(colors)
         # image resolution
         dpi=96
 
