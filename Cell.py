@@ -45,7 +45,7 @@ class Cell:
                 if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
                     num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
                     probs.append((attraction/num_neighbors_neighbors)**10 / attraction_sum**10)
-                    #probs.append((attraction)**10 / attraction_sum**10)
+                    # probs.append((attraction)**10 / attraction_sum**10)
                 else:
                     probs.append((attraction)**10 / attraction_sum**10)
 

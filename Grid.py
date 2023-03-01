@@ -36,6 +36,17 @@ class Grid:
     def get_area(self):
         return self.width*self.height
 
+    def calc_clustering_coef(self) ->float:
+        coef = 0
+        MAX_NUM_NEIGHBORS = 8
+        total_cell_num = self.stats.num_cells
+        for y in range(self.width):
+            for x in range(self.height):
+                if self[Point(x,y)].cell != None:
+                    num_neighbors = self.num_neighbors(location=Point(x,y))
+                    coef += (num_neighbors/MAX_NUM_NEIGHBORS) * (1/total_cell_num)
+        return coef
+
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
     def __setitem__(self, key:Point, value: Tile):
@@ -62,7 +73,7 @@ class Grid:
                 self.stats.add_attractor_cell()
 
             # print(self.get_potential_matrix(), '\n')
-        self.visualize_potential_matrix()
+        #self.visualize_potential_matrix()
 
     def apply_modifier(self, type: ModifierType, cell_location: Point, neg_effect: bool = False):
         if (type == ModifierType.ATTRACTION_MATRIX):
@@ -81,6 +92,15 @@ class Grid:
 
     def visualize_potential_matrix(self):
         pot_mat = self.get_potential_matrix()
+        fig, ax = plt.subplots()
+        # im = ax.imshow(pot_mat, cmap='viridis', vmin=0, vmax=1200)
+        im = ax.imshow(pot_mat, cmap='viridis')
+        ax.grid(False)
+        fig.colorbar(im)
+        plt.show()
+       
+
+
         plt.imshow(pot_mat, cmap='viridis', vmin=0, vmax=1800)
 
     def next_gen(self):
