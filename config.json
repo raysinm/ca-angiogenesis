@@ -5,8 +5,8 @@
     "attractor_cell" : 
         {"attraction_generated" : 1e18},
     "stalk_cell" : 
-        {"p_sprout" : 0.01},
-    "attraction" : {"decay_coef": 1.2, "update_precision": 0.001}        
+        {"p_sprout" : 0.008},
+    "attraction" : {"decay_coef": 0.7, "update_precision": 0.001}        
     },
     "debug": false
 }

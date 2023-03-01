@@ -1,7 +1,13 @@
 import json
 import numpy as np
+import pandas as pd
 from enum import Enum
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
+# Colormap for visualization
+colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
+cmap = mcolors.ListedColormap(colors)
 
 # Default global config file
 CONFIG = None
@@ -58,7 +64,7 @@ class EngineStatistics():
     
     def update_clustering_coef(self, coef:float) ->None:
         self.clustering_coef = coef
-    
+
     def __str__(self) -> str:
         return f"Number of cells throughout generations:\n{self.num_cell_history}\nNumber of TIP cells throughout generations:\n{self.num_tip_history}\n \
     Number of STALK cells throughout generations:\n{self.num_stalk_history}\n"
@@ -171,3 +177,49 @@ def visualize_probabilities(attrs, probs, block=True):
                 ax.text(j, i, text, ha='center', va='center')
 
         plt.show(block)
+
+
+def vis_stats_cells(stats: EngineStatistics):
+    
+    stats_cells = stats.num_cell_history
+    stats_tips = stats.num_tip_history
+    stats_stalks = stats.num_stalk_history
+    
+    # Make a data frame
+    df=pd.DataFrame({'Generations': range(0,stats.generations), 'Cells': stats_cells, 'Tips': stats_tips, 'Stalk': stats_stalks})
+    # Change the style of plot
+    plt.style.use('seaborn-darkgrid')
+    
+    # Plot multiple lines
+    num=0
+    for column in df.drop('Generations', axis=1):
+        plt.plot(df['Generations'], df[column], marker='', color=cmap(num), linewidth=1, alpha=0.9, label=column)
+        num+=1
+
+    # Add legend
+    plt.legend(loc=2, ncol=2)
+
+    # Add titles
+    plt.title("Quantity of Cells Throughout Run", loc='left', fontsize=12, fontweight=0, color='navy')
+    plt.xlabel("Generations")
+    plt.ylabel("Amount")
+
+    # Show the graph
+    plt.show()
+
+def vis_stats_density(stats : EngineStatistics, grid_area : int):
+    density_history = stats.num_cell_history / grid_area
+    plt.plot(range(stats.generations), density_history, marker='', color=cmap(0), linewidth=1, alpha=0.9)
+
+    # Add titles
+    plt.title("Density of Cells Throughout Run", loc='left', fontsize=12, fontweight=0, color='navy')
+    plt.xlabel("Generations")
+    plt.ylabel("Density")
+
+    # Show the graph
+    plt.show()
+
+
+
+
+        

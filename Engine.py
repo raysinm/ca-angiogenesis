@@ -4,7 +4,11 @@ import matplotlib.colors as mcolors
 from math import ceil, sqrt
 
 from Grid import Grid
-from utils import EngineStatistics
+from utils import EngineStatistics, vis_stats_cells, vis_stats_density
+
+# Colormap for visualization
+colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
+cmap = mcolors.ListedColormap(colors)
 
 class Engine():
     """Class to execute the simulation (singleton)
@@ -33,10 +37,13 @@ class Engine():
 
             self.stats.update(gen=i, stats=self.history[-1].get_stats()) 
             self.curr_gen += 1
+
         self.stats.update_clustering_coef(coef=self.history[-1].calc_clustering_coef())
     
     def get_stats(self) -> EngineStatistics :
         return self.stats
+    def visualize_potential(self,gen:int=0):
+        self.history[gen].visualize_potential_matrix()
 
     def visualize(self):
         """ Build a plot showing all of the generations in the simulation."""
@@ -47,13 +54,10 @@ class Engine():
         fig, ax = plt.subplots(nrows=ROWS, ncols=COLS, figsize=(30,30))
 
         # Display the initial state in the first subplot
-        colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
-        labels = ['Empty', 'Stalk', 'Tip', 'Attractor']
-
-        cmap = mcolors.ListedColormap(colors)
+        
         if dim == 1:
             mat = self.history[-1].to_matrix()
-            im = ax.imshow(mat, cmap=cmap, vmin=0, vmax=3)
+            plt.imshow(mat, cmap=cmap, vmin=0, vmax=3)
             fig.set_facecolor('white')
             ax.axis('off')
             ax.set_title(f'Generation {self.generations - 1}')
@@ -82,7 +86,7 @@ class Engine():
         dim = ceil(sqrt(self.generations))
         if dim == 0:
             return None
-        gens = range(0,101,20)
+        gens = range(0,82,27)
         ROWS, COLS =(1, len(gens))
         fig, ax = plt.subplots(nrows=1, ncols=COLS, figsize=(30,30))
         # ax.set_facecolor('white')
@@ -91,24 +95,28 @@ class Engine():
         colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
         labels = ['Empty', 'Stalk', 'Tip', 'Attractor']
 
-        x = 0
-        y = 0
-        
-        # Using a manual for loop here to make sure we only iterate up to last generation.
-        # generations <(ceil(sqrt(generations)))^2 => generations <= plt size
-        for g in range(self.generations):
-            mat = self.history[x+y*COLS].to_matrix()
-            im = ax[y][x].imshow(mat, cmap=cmap, vmin=0, vmax=3)
+        cmap = mcolors.ListedColormap(colors)
+        if dim == 1:
+            mat = self.history[-1].to_matrix()
+            im = ax.imshow(mat, cmap=cmap, vmin=0, vmax=3)
             fig.set_facecolor('white')
-            ax[y][x].axis('off')
-            ax[y][x].set_title(f'Generation {x+y*COLS}')       
-
-            x += 1
-            if x == COLS:
-                x = 0
-                y += 1
-
+            ax.axis('off')
+            ax.set_title(f'Generation {self.generations - 1}')
+        else:
+            for y,gen in enumerate(gens):
+                mat = self.history[gen].to_matrix()
+                im = ax[y].imshow(mat, cmap=cmap, vmin=0, vmax=3)
+                fig.set_facecolor('white')
+                ax[y].axis('off')
+                ax[y].set_title(f'Generation {gen}',fontsize='xx-large')    
+            
+        
+        # import matplotlib.patches as mpatches
+        # legend_patches = [mpatches.Patch(color=color, label=label) for color, label in zip(colors, labels)]
+        # fig.legend(handles=legend_patches, loc='upper left', bbox_to_anchor=(0, 1))
+        
         plt.show()        
+        return None
     
     def save_results(self):
          ## SAVING IMAGES:
@@ -144,3 +152,9 @@ class Engine():
             plt.close(fig)
 
         return None
+    
+    def visualize_statistics(self):
+        stats = self.stats
+        vis_stats_cells(stats=stats)
+        vis_stats_density(stats=stats, grid_area=stats.area)
+        print(f"Clustering Coefficient: {round(stats.clustering_coef, 3)}")

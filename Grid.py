@@ -56,7 +56,8 @@ class Grid:
                     num_neighbors = self.num_neighbors(location=Point(x,y))
                     coef += (num_neighbors/MAX_NUM_NEIGHBORS) * (1/total_cell_num)
         return coef
-
+    
+    
     # Implemented index ([]) operator
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
@@ -124,11 +125,14 @@ class Grid:
 
     def visualize_potential_matrix(self):
         pot_mat = self.get_potential_matrix()
+        pot_mat = np.log10(pot_mat + 1e-10)  # Add a small constant to avoid division by zero
         fig, ax = plt.subplots()
-        plt.imshow(pot_mat, cmap='viridis', vmin=0, vmax=10000)
+        im = plt.imshow(pot_mat, cmap='viridis', vmin=0)
         ax.grid(False)
         fig.colorbar(im)
-        #plt.show()
+        ax.set_title(label="Potential Matrix (logarithmic scale)")
+        ax.axis("off")
+        plt.show()
 
     def next_gen(self):
         """Perform a single iteration of the simulation.
@@ -197,9 +201,10 @@ class Grid:
               
             if action.type == ActionType.SPROUT and (not self[new_location].cell):
                 self[new_location].cell = TipCell()
+                self.stats.add_tip_cell()
 
             if action.type == ActionType.MIGRATE:
-             
+                
                 # If moving to an empty tile, move the tip, reapply attraction.
                 if(not self[new_location].cell):
                     self[new_location].cell = self[cell_location].cell
@@ -210,7 +215,7 @@ class Grid:
 
             if action.type == ActionType.SPROUT:
                 if(not self[action.dst + cell_location].cell):
-                    self[action.dst + cell_location].cell = TipCell(1)
+                    self[action.dst + cell_location].cell = TipCell()
                     self.stats.add_tip_cell()
 
     def to_matrix(self):

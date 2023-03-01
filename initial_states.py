@@ -1,144 +1,23 @@
 from utils import Point
 
-initial_grid1_stalks = [Point(25, y) for y in range(60)]
-initial_grid1_attractors = [Point(59, y) for y in range(10,20)]
+#Stalk cells initiation options
+initial_stalks_option1 = [Point(25, y) for y in range(60)]
+initial_stalks_option2 = [Point(x,y) for x in range(0, 40) for y in range(20,60) if x == y-20]
+initial_stalks_option3 = [Point(0, y) for y in range(60)]
 
+#Attractor cells initiation options
+initial_attractors_option1 = [Point(59, 15)]
+initial_attractors_option2 = [Point(45, 15)]
 
-Stalk_pres = [Point(0, y) for y in range(30)]
-Stalk_pres_mid = [Point(20, y) for y in range(60)]
-
-
-Attractors_small = [Point(x=19, y=19), Point(x=18, y=19),
-                    Point(x=19, y=18),Point(x=18, y=18),Point(x=17, y=18)]
-Attractors_small2 = [Point(x=14, y=14), Point(x=13, y=14),
-                    Point(x=14, y=13),Point(x=13, y=13),Point(x=12, y=13)]
-Attractors_small3 = [Point(29,0), Point(29,1), Point(29,2), Point(29,3), Point(29,4), Point(29,5), Point(29,6), Point(29,7), Point(29,8)]
-Attractors_small4 = [Point(59, y) for y in range(10,20)] + [Point(58, y) for y in range(10,20)]
-Attractors_small5 = [Point(x=14, y=14)]
-
-Attractors_big = [Point(x=45, y=45),
- Point(x=45, y=46),
- Point(x=45, y=47),
- Point(x=45, y=48),
- Point(x=45, y=49),
- Point(x=45, y=50),
- Point(x=45, y=51),
- Point(x=45, y=52),
- Point(x=45, y=53),
- Point(x=45, y=54),
- Point(x=45, y=55),
- Point(x=46, y=45),
- Point(x=46, y=46),
- Point(x=46, y=47),
- Point(x=46, y=48),
- Point(x=46, y=49),
- Point(x=46, y=50),
- Point(x=46, y=51),
- Point(x=46, y=52),
- Point(x=46, y=53),
- Point(x=46, y=54),
- Point(x=46, y=55),
- Point(x=47, y=45),
- Point(x=47, y=46),
- Point(x=47, y=47),
- Point(x=47, y=48),
- Point(x=47, y=49),
- Point(x=47, y=50),
- Point(x=47, y=51),
- Point(x=47, y=52),
- Point(x=47, y=53),
- Point(x=47, y=54),
- Point(x=47, y=55),
- Point(x=48, y=45),
- Point(x=48, y=46),
- Point(x=48, y=47),
- Point(x=48, y=48),
- Point(x=48, y=49),
- Point(x=48, y=50),
- Point(x=48, y=51),
- Point(x=48, y=52),
- Point(x=48, y=53),
- Point(x=48, y=54),
- Point(x=48, y=55),
- Point(x=49, y=45),
- Point(x=49, y=46),
- Point(x=49, y=47),
- Point(x=49, y=48),
- Point(x=49, y=49),
- Point(x=49, y=50),
- Point(x=49, y=51),
- Point(x=49, y=52),
- Point(x=49, y=53),
- Point(x=49, y=54),
- Point(x=49, y=55),
- Point(x=50, y=45),
- Point(x=50, y=46),
- Point(x=50, y=47),
- Point(x=50, y=48),
- Point(x=50, y=49),
- Point(x=50, y=51),
- Point(x=50, y=52),
- Point(x=50, y=53),
- Point(x=50, y=54),
- Point(x=50, y=55),
- Point(x=51, y=45),
- Point(x=51, y=46),
- Point(x=51, y=47),
- Point(x=51, y=48),
- Point(x=51, y=49),
- Point(x=51, y=50),
- Point(x=51, y=51),
- Point(x=51, y=52),
- Point(x=51, y=53),
- Point(x=51, y=54),
- Point(x=51, y=55),
- Point(x=52, y=45),
- Point(x=52, y=46),
- Point(x=52, y=47),
- Point(x=52, y=48),
- Point(x=52, y=49),
- Point(x=52, y=50),
- Point(x=52, y=51),
- Point(x=52, y=52),
- Point(x=52, y=53),
- Point(x=52, y=54),
- Point(x=52, y=55),
- Point(x=53, y=45),
- Point(x=53, y=46),
- Point(x=53, y=47),
- Point(x=53, y=48),
- Point(x=53, y=49),
- Point(x=53, y=50),
- Point(x=53, y=51),
- Point(x=53, y=52),
- Point(x=53, y=53),
- Point(x=53, y=54),
- Point(x=53, y=55),
- Point(x=54, y=45),
- Point(x=54, y=46),
- Point(x=54, y=47),
- Point(x=54, y=48),
- Point(x=54, y=49),
- Point(x=54, y=50),
- Point(x=54, y=51),
- Point(x=54, y=52),
- Point(x=54, y=53),
- Point(x=54, y=54),
- Point(x=54, y=55),
- Point(x=55, y=45),
- Point(x=55, y=46),
- Point(x=55, y=47),
- Point(x=55, y=48),
- Point(x=55, y=49),
- Point(x=55, y=50),
- Point(x=55, y=51),
- Point(x=55, y=52),
- Point(x=55, y=53),
- Point(x=55, y=54),
- Point(x=55, y=55)]
-
-
+# Putting together an init_config object
 sanity_init_config = {'tip_cells': [Point(5,5)],
-               'attractor_cells': Attractors_small5}
-init_config_stalk_middle = { 'stalk_cells': Stalk_pres_mid,
-                             'attractor_cells': Attractors_small4}
+               'attractor_cells': initial_attractors_option1}
+
+init_config_stalk_middle = { 'stalk_cells': initial_stalks_option1,
+                             'attractor_cells': initial_attractors_option1}
+
+init_config_stalk_diagonal = { 'stalk_cells': initial_stalks_option2,
+                             'attractor_cells': initial_attractors_option1}
+
+init_config_stalk_top = { 'stalk_cells': initial_stalks_option3,
+                             'attractor_cells': initial_attractors_option1}
