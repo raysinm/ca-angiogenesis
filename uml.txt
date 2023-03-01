@@ -1,0 +1,76 @@
+@startuml
+abstract class Cell {
++ int attraction_generated
++ int p_migrate
++ int p_prolif
++ float[][] attraction_matrix
+
++ get_actions(grid_context)
++ get_context()
++ is alive()
++ get modifiers()
++ choose_direction()
+
+}
+
+class TipCell {
++ should_migrate()
+}
+class AttractorCell {
+}
+class StalkCell {
++ should_prolif()
+}
+
+Cell <|-- AttractorCell
+Cell <|-- StalkCell
+Cell <|-- TipCell
+
+class Grid {
+ + int height
+ + int weight
+ + Tile[][] grid
+
+ + init_grid()
+ + get_potential_matrix()
+ + generate_context(cell_context, Point cell_location)
+ + exce_cell_actions(actions, Point cell_location)
+ + next_gen()
+ + to_matrix()
+ 
+}
+
+class Point {
+ + int x
+ + int y
+}
+
+class Action{
+ + Point dst
+ + int action_type
+}
+
+
+class Tile {
++ float attraction
++ Cell cell
+}
+
+
+class Engine {
+ + Grid[] history
+ + int generations
+ + int curr_gen
+
+ + run()
+ + visualize()
+ + visualize potential()
+}
+
+Engine *-- Grid
+Grid *-- Tile
+
+class CONFIG
+{
+}
+@enduml
