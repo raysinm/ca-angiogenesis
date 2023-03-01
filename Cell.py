@@ -4,9 +4,11 @@ from random import uniform, choices
 
 from utils import CONFIG, attraction_to_radius, attraction_decay, Action, ActionType, ContextRequest, Point, ModifierType, visualize_probabilities
 
+
 class CellStatus(Enum):
     DEAD = 0
     ALIVE = 1
+
 
 class Cell:
     def __init__(self, p_migrate=0, p_prolif=0, attraction_generated=0):
@@ -47,7 +49,7 @@ class Cell:
     def get_modifiers(self):
         """ Returns a dictionary whose keys are modifier types and values are the modifier values.
         """
-        return {ModifierType.ATTRACTION_MATRIX : self.attraction_matrix}
+        return {ModifierType.ATTRACTION_MATRIX: self.attraction_matrix}
 
     def choose_direction(self, grid_context) -> Point:
         """ Generic function to choose a direction with probability based to potential (attraction) around the given cell
@@ -76,26 +78,25 @@ class Cell:
 
                 # Calculate probability
 
-                # If information regarding the neighbors of the neighbors was provided, use this information to penalize directions 
+                # If information regarding the neighbors of the neighbors was provided, use this information to penalize directions
                 # which already have many cells. This simulates the mechanical pressure, which create a repulsive effect.
                 if (ContextRequest.NEIGHBORS_NEIGHBORS in grid_context):
                     num_neighbors_neighbors = grid_context[ContextRequest.NEIGHBORS_NEIGHBORS][neighbor_tile]
-                    probs.append((attraction/num_neighbors_neighbors) / attraction_sum)
+                    probs.append(
+                        (attraction/num_neighbors_neighbors) / attraction_sum)
                 else:
                     probs.append((attraction) / attraction_sum)
 
             # Debug capabilities
-            if(CONFIG["debug"]):  
+            if (CONFIG["debug"]):
                 visualize_probabilities(list(attractions.values()), probs)
 
             # Choose a direction
             direction = choices(options, probs)[0]
-        
+
         return direction
 
-    
-
-    def generate_actions_by_attraction(self, grid_context, cond : bool, action_type: ActionType):
+    def generate_actions_by_attraction(self, grid_context, cond: bool, action_type: ActionType):
         """ Generic function that creates the action list for the cell, based on a given condition.
 
         Args:
@@ -110,8 +111,8 @@ class Cell:
 
         # Assert the the condition is fulfilled
         if (cond):
-            direction = self.choose_direction(grid_context) 
-            if (direction != Point(0, 0)): # Cannot act on yourself
+            direction = self.choose_direction(grid_context)
+            if (direction != Point(0, 0)):  # Cannot act on yourself
                 actions.append(Action(dst=direction, type=action_type))
 
         return actions
@@ -122,19 +123,23 @@ class Cell:
         Returns:
             int[][]: The attraction matrix
         """
-        radius = attraction_to_radius(self.attraction_generated) # Maximal radius according to precision defined in the config.
+        radius = attraction_to_radius(
+            self.attraction_generated)  # Maximal radius according to precision defined in the config.
         center = Point(radius, radius)
-        mat = np.zeros(shape=((2*radius)+1, (2*radius)+1), dtype=float)  # 2*radius+1 because we want the center to be the cell itself
-        
+        # 2*radius+1 because we want the center to be the cell itself
+        mat = np.zeros(shape=((2*radius)+1, (2*radius)+1), dtype=float)
+
         # For each cell in the neighborhood of size radius, calculate the attraction.
-        for (x,y), attraction in np.ndenumerate(mat):
-                mat[x][y] = attraction_decay(self.attraction_generated, Point(x,y).dist(center)) 
-        
+        for (x, y), attraction in np.ndenumerate(mat):
+            mat[x][y] = attraction_decay(
+                self.attraction_generated, Point(x, y).dist(center))
+
         return mat
 
 
 class TipCell(Cell):
     """Class for a migrating cell that drags stalk cells as he moves."""
+
     def __init__(self, p_migrate=CONFIG["defaults"]["tip_cell"]["p_migrate"]):
         # Call parent constructor
         Cell.__init__(self, p_migrate=p_migrate)
@@ -149,7 +154,7 @@ class TipCell(Cell):
             ATTRACTION_IN_NEIGHBORHOOD : required in order to choose the direction of migration according to attraction.
         """
         return [ContextRequest.ATTRACTION_IN_NEIGHBORHOOD, ContextRequest.NEIGHBORS_NEIGHBORS]
-    
+
     def should_migrate(self):
         """This cell has a chance of p_migrate to move.
 
@@ -161,11 +166,12 @@ class TipCell(Cell):
 
 class StalkCell(Cell):
     """Class for a proliferative cell, capable of sprouting into new tips"""
+
     def __init__(self, p_sprout=CONFIG["defaults"]["stalk_cell"]["p_sprout"]):
         Cell.__init__(self)
         self.p_sprout = p_sprout
         self.count_prolif = 0
-        
+
     def get_context(self):
         """Returns the required context for this cells actions.
            ATTRACTION_IN_NEIGHBORHOOD : required in order to choose the direction of sprouting according to attraction.
@@ -175,12 +181,13 @@ class StalkCell(Cell):
 
     def get_actions(self, grid_context):
         return self.generate_actions_by_attraction(grid_context, self.should_sprout(grid_context), ActionType.SPROUT)
-    
+
     def should_sprout(self, grid_context):
-        return (uniform(0,1) < self.p_sprout)
+        return (uniform(0, 1) < self.p_sprout)
 
 
 class AttractorCell(Cell):
     """Class for a cell that attracts tip cells"""
+
     def __init__(self, attraction_generated=CONFIG["defaults"]["attractor_cell"]["attraction_generated"]):
         Cell.__init__(self, attraction_generated=attraction_generated)
