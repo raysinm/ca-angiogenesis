@@ -4,12 +4,8 @@ initial_grid1_stalks = [Point(25, y) for y in range(60)]
 initial_grid1_attractors = [Point(59, y) for y in range(10,20)]
 
 
-
 Stalk_pres = [Point(0, y) for y in range(30)]
 Stalk_pres_mid = [Point(20, y) for y in range(60)]
-
-
-
 
 
 Attractors_small = [Point(x=19, y=19), Point(x=18, y=19),
@@ -18,8 +14,7 @@ Attractors_small2 = [Point(x=14, y=14), Point(x=13, y=14),
                     Point(x=14, y=13),Point(x=13, y=13),Point(x=12, y=13)]
 Attractors_small3 = [Point(29,0), Point(29,1), Point(29,2), Point(29,3), Point(29,4), Point(29,5), Point(29,6), Point(29,7), Point(29,8)]
 Attractors_small4 = [Point(59, y) for y in range(10,20)] + [Point(58, y) for y in range(10,20)]
-
-
+Attractors_small5 = [Point(x=14, y=14)]
 
 Attractors_big = [Point(x=45, y=45),
  Point(x=45, y=46),
@@ -141,3 +136,9 @@ Attractors_big = [Point(x=45, y=45),
  Point(x=55, y=53),
  Point(x=55, y=54),
  Point(x=55, y=55)]
+
+
+sanity_init_config = {'tip_cells': [Point(5,5)],
+               'attractor_cells': Attractors_small5}
+init_config_stalk_middle = { 'stalk_cells': Stalk_pres_mid,
+                             'attractor_cells': Attractors_small4}

@@ -1,61 +1,71 @@
 import matplotlib.pyplot as plt
-from Grid import Grid
+import matplotlib.colors as mcolors
+
 from math import ceil, sqrt
+
+from Grid import Grid
 from utils import EngineStatistics
+
 class Engine():
+    """Class to execute the simulation (singleton)
+       Starting from an initial state, the class will run the simulation generation after generation and save the entire history of board state.
+    """
     def __init__(self, init_grid: Grid, generations : int):
+        """Class constructor
+
+        Args:
+            init_grid (Grid): The initial state of the simulation (2d tile array)
+            generations (int): number of generations to run in the simulation.
+        """
         self.history = [init_grid]
         self.generations = generations
         self.curr_gen = 0
         self.stats = EngineStatistics(num_generations=generations)
-        init_grid.visualize_potential_matrix()
-
 
     def run(self):
+        """Run the simulation, main entry function.
+        """
         for i in range(self.generations):
+            # Append the next generation to the result history array
             self.history.append(self.history[-1].next_gen())
-            self.history[-1].visualize_potential_matrix()
+
             self.stats.update(gen=i, stats=self.history[-1].get_stats()) 
             self.curr_gen += 1
     
     def get_stats(self) -> EngineStatistics :
         return self.stats
 
-
     def visualize(self):
+        """ Build a plot showing all of the generations in the simulation."""
         dim = ceil(sqrt(self.generations))
         ROWS, COLS =(dim, dim)
         fig, ax = plt.subplots(nrows=ROWS, ncols=COLS, figsize=(30,30))
-        # ax.set_facecolor('white')
+
         # Display the initial state in the first subplot
-        import matplotlib.colors as mcolors
         colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
         cmap = mcolors.ListedColormap(colors)
 
-        # Use the colormap with imshow()
-        for y in range(COLS):
-            for x in range(ROWS):
-                # print(self.history[x+y*COLS].to_matrix())
-                if (x+y*COLS > self.generations):       #TODO: FIX This 
-                    plt.show()         
-                    return None
-                # ax[x][y].imshow(self.history[x+y*COLS].to_matrix(), cmap='gray')
-                # ax[x][y].axis('off')
-                # ax[x][y].set_title(f'generation {x+y*COLS}')  
-                mat = self.history[x+y*COLS].to_matrix()
-                # print(mat)  
-                # ax[y][x].imshow(mat, cmap='tab10')
-                im = ax[y][x].imshow(mat, cmap=cmap, vmin=0, vmax=3)
-                fig.set_facecolor('white')
-                ax[y][x].axis('off')
-                ax[y][x].set_title(f'Generation {x+y*COLS}')    
+        x = 0
+        y = 0
         
+        # Using a manual for loop here to make sure we only iterate up to last generation.
+        # generations <(ceil(sqrt(generations)))^2 => generations <= plt size
+        for g in range(self.generations):
+            mat = self.history[x+y*COLS].to_matrix()
+            im = ax[y][x].imshow(mat, cmap=cmap, vmin=0, vmax=3)
+            fig.set_facecolor('white')
+            ax[y][x].axis('off')
+            ax[y][x].set_title(f'Generation {x+y*COLS}')       
+
+            x += 1
+            if x == COLS:
+                x = 0
+                y += 1
+
         plt.show()        
-        return None
     
     def save_results(self):
          ## SAVING IMAGES:
-        import matplotlib.colors as mcolors
         colors = [(0,0,0), (1,0,0), (1,1,0), (0,0,1)]
         cmap = mcolors.ListedColormap(colors)
         # image resolution
