@@ -46,6 +46,17 @@ class Grid:
     def get_area(self):
         return self.width*self.height
 
+    def calc_clustering_coef(self) ->float:
+        coef = 0
+        MAX_NUM_NEIGHBORS = 8
+        total_cell_num = self.stats.num_cells
+        for y in range(self.width):
+            for x in range(self.height):
+                if self[Point(x,y)].cell != None:
+                    num_neighbors = self.num_neighbors(location=Point(x,y))
+                    coef += (num_neighbors/MAX_NUM_NEIGHBORS) * (1/total_cell_num)
+        return coef
+
     # Implemented index ([]) operator
     def __getitem__(self, key:Point) -> Tile:
         return self.grid[key.x][key.y]
@@ -113,7 +124,11 @@ class Grid:
 
     def visualize_potential_matrix(self):
         pot_mat = self.get_potential_matrix()
+        fig, ax = plt.subplots()
         plt.imshow(pot_mat, cmap='viridis', vmin=0, vmax=10000)
+        ax.grid(False)
+        fig.colorbar(im)
+        #plt.show()
 
     def next_gen(self):
         """Perform a single iteration of the simulation.

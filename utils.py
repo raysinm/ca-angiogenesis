@@ -40,17 +40,24 @@ class GridStatistics():
     
 class EngineStatistics():
     """A class used to store statistics about a whole simulation containing all generations (one grid per generation)."""
-    def __init__(self, num_generations:int = 0):
+    
+    def __init__(self, num_generations:int = 0, area:int=1):
         self.num_generations = num_generations
         self.num_cell_history = np.zeros(shape=num_generations)
         self.num_tip_history = np.zeros(shape=num_generations)
         self.num_stalk_history = np.zeros(shape=num_generations)
-        
+        self.generations = num_generations
+        self.area = area
+        self.clustering_coef = -1
+
     def update(self, gen:int, stats:GridStatistics) ->None: 
         self.num_cell_history[gen] = stats.num_cells
         self.num_tip_history[gen] = stats.num_tip
         self.num_stalk_history[gen] = stats.num_stalk
         return
+    
+    def update_clustering_coef(self, coef:float) ->None:
+        self.clustering_coef = coef
     
     def __str__(self) -> str:
         return f"Number of cells throughout generations:\n{self.num_cell_history}\nNumber of TIP cells throughout generations:\n{self.num_tip_history}\n \
