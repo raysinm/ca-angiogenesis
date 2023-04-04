@@ -1,5 +1,5 @@
 # Cellular Automata Model of Angiogenesis
-### Simulating the emergence of new blood vessels using discrete cellular automata and with accordance to the classical model of angiogenesis.
+### Simulating the emergence of new blood vessels using discrete cellular automata with accordance to the classical model of angiogenesis.
 
 By Matan Hoory and Maya Raysin
 
