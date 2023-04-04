@@ -26,7 +26,10 @@ rises.
 proliferation, they are able to create Tip Cells during a process called sprouting.
 * Tip Cells (yellow): Migratory cells that migrate along the gradient of VEGF. In the biological system, the
 tip cells are physically attached to the stalk cells. In our model, we use a simplification in
-which the movement of tip cells creates a trail of stalk cells.
+which the movement of tip cells creates a trail of stalk cells.  
+
+See project report for more information.  
+
 
 ## Installation
 
@@ -37,6 +40,7 @@ numpy>=1.24.2
 pandas>=1.5.3
 ```
 Written in python 3.8.10
+
 
 ## Usage
 
