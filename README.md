@@ -1,6 +1,7 @@
 # Cellular Automata Model of Angiogenesis
 By Matan Hoory and Maya Raysin
 
+![alt text](./logo.png)
 Simulating the emergence of new blood vessels using discrete cellular automata and with accordance to the classical model of angiogenesis.
 
 ## Table of Contents
@@ -30,9 +31,9 @@ which the movement of tip cells creates a trail of stalk cells.
 
 Dependencies (availible in requirements.txt): 
 ```
-{matplotlib>=3.7.1
+matplotlib>=3.7.1
 numpy>=1.24.2
-pandas>=1.5.3}
+pandas>=1.5.3
 ```
 Written in python 3.8.10
 
