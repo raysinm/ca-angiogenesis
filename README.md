@@ -1,7 +1,7 @@
 # Cellular Automata Model of Angiogenesis
-By Matan Hoory and Maya Raysin
+### Simulating the emergence of new blood vessels using discrete cellular automata and with accordance to the classical model of angiogenesis.
 
-Simulating the emergence of new blood vessels using discrete cellular automata and with accordance to the classical model of angiogenesis.
+By Matan Hoory and Maya Raysin
 
 ![alt text](./logo.png)
 
@@ -30,7 +30,7 @@ which the movement of tip cells creates a trail of stalk cells.
 
 ## Installation
 
-Dependencies (availible in requirements.txt): 
+Dependencies (available in requirements.txt): 
 ```
 matplotlib>=3.7.1
 numpy>=1.24.2
@@ -40,10 +40,10 @@ Written in python 3.8.10
 
 ## Usage
 
-See project report for more information on usage and methods.
+See project report for more information on usage and methods.  
 A web app for more convenient usage is under development. 
 
-main.py - Used for running the engine. Examples included inside.
-config.json - Used for inputting different parameters for the model (e.g p_migrate for defining the probability of a tip cell to move).  
-initial_states.py - Imported to main.py and used for configuration of initial stated for the grid. Sample initial grids are availible. 
+- main.py - Used for running the engine. Examples included inside.
+- config.json - Used for input of different parameters for the model (e.g p_migrate for defining the probability of a tip cell to move).  
+- initial_states.py - Imported to main.py and used for configuration of initial stated for the grid. Sample initial grids are available. 
 
