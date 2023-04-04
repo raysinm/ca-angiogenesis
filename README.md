@@ -1,8 +1,9 @@
 # Cellular Automata Model of Angiogenesis
 By Matan Hoory and Maya Raysin
 
-![alt text](./logo.png)
 Simulating the emergence of new blood vessels using discrete cellular automata and with accordance to the classical model of angiogenesis.
+
+![alt text](./logo.png)
 
 ## Table of Contents
 
