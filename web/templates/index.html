@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
+        <!-- <link rel="stylesheet" href="../static/styles.css"> -->
+        <title>CA - Angiogenesis</title>
+    </head>
+    <body>
+        <h1> CA - Angiogenesis </h1>
+        <p1>Cellular Automata Model of Angiogenesis.</p1>
+            <ul>
+                <li>List item 1</li>
+                <li>List item 2</li>
+                <li>List item 3</li>
+                </ul>
+                <img src="../static/image.png" alt="My Image">
+                <label for="name">Enter your name:</label>
+                <input type="text" id="name" name="name" maxlength="20">
+                <button id="greet">Push me don't worry</button>
+                <output id="result"></output>
+                
+        <div class="container"></div>
+
+        <div id="tip-cell">
+            <h2>Tip Cell</h2>
+            <p>Migration Probability:</p>
+            <input type="range" min="0" max="1" step="0.01" value="0.9" onchange="updateValue('tip_cell', 'p_migrate', this.value)" />
+            <input type="text" value="0.9" onchange="updateRange('tip_cell', 'p_migrate', this.value)" />
+        </div>
+
+        <div id="attractor-cell">
+            <h2>Attractor Cell</h2>
+            <p>Attraction Generated:</p>
+            <input type="range" min="0" max="1e18" step="1e15" value="1e18" onchange="updateValue('attractor_cell', 'attraction_generated', this.value)" />
+            <input type="text" value="1e18" onchange="updateRange('attractor_cell', 'attraction_generated', this.value)" />
+        </div>
+
+        <div id="stalk-cell">
+            <h2>Stalk Cell</h2>
+            <p>Sprout Probability:</p>
+            <input type="range" min="0" max="0.01" step="0.0001" value="0.008" onchange="updateValue('stalk_cell', 'p_sprout', this.value)" />
+            <input type="text" value="0.008" onchange="updateRange('stalk_cell', 'p_sprout', this.value)" />
+        </div>
+
+        <div id="attraction">
+            <h2>Attraction</h2>
+            <p>Decay Coefficient:</p>
+            <input type="range" min="0" max="1" step="0.01" value="0.7" onchange="updateValue('attraction', 'decay_coef', this.value)" />
+            <input type="text" value="0.7" onchange="updateRange('attraction', 'decay_coef', this.value)" />
+
+            <p>Update Precision:</p>
+            <input type="range" min="0" max="0.1" step="0.001" value="0.001" onchange="updateValue('attraction', 'update_precision', this.value)" />
+            <input type="text" value="0.001" onchange="updateRange('attraction', 'update_precision', this.value)" />
+        </div>
+
+        <script src="../static/request_config.js"></script>
+
+    </body>
+</html>
