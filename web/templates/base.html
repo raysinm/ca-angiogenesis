@@ -14,57 +14,6 @@
   </head>
   <body>
     
-    <div class="container">
-        {% block content %} {% endblock %}
-    </div>
-
-    <div id="tip-cell">
-        <h2>Tip Cell</h2>
-        <p>Migration Probability:</p>
-        <input type="range" min="0" max="1" step="0.01" value="0.9" onchange="updateValue('tip_cell', 'p_migrate', this.value)" />
-        <input type="text" value="0.9" onchange="updateRange('tip_cell', 'p_migrate', this.value)" />
-    </div>
-
-    <div id="attractor-cell">
-        <h2>Attractor Cell</h2>
-        <p>Attraction Generated:</p>
-        <input type="range" min="0" max="1e18" step="1e15" value="1e18" onchange="updateValue('attractor_cell', 'attraction_generated', this.value)" />
-        <input type="text" value="1e18" onchange="updateRange('attractor_cell', 'attraction_generated', this.value)" />
-    </div>
-
-    <div id="stalk-cell">
-        <h2>Stalk Cell</h2>
-        <p>Sprout Probability:</p>
-        <input type="range" min="0" max="0.01" step="0.0001" value="0.008" onchange="updateValue('stalk_cell', 'p_sprout', this.value)" />
-        <input type="text" value="0.008" onchange="updateRange('stalk_cell', 'p_sprout', this.value)" />
-    </div>
-
-    <div id="attraction">
-        <h2>Attraction</h2>
-        <p>Decay Coefficient:</p>
-        <input type="range" min="0" max="1" step="0.01" value="0.7" onchange="updateValue('attraction', 'decay_coef', this.value)" />
-        <input type="text" value="0.7" onchange="updateRange('attraction', 'decay_coef', this.value)" />
-
-        <p>Update Precision:</p>
-        <input type="range" min="0" max="0.1" step="0.001" value="0.001" onchange="updateValue('attraction', 'update_precision', this.value)" />
-        <input type="text" value="0.001" onchange="updateRange('attraction', 'update_precision', this.value)" />
-    </div>
-
-    <script>
-        // Load the config.json file using an HTTP request
-        const request = new XMLHttpRequest();
-        request.open('GET', 'config.json');
-        request.responseType = 'json';
-        request.send();
-        request.onload = function() {
-            const config = request.response;
-
-            // Update the slider and text box values when the page loads
-            updateValues('tip_cell', 'p_migrate', config.defaults.tip_cell.p_migrate);
-            updateValues('attractor_cell', 'attraction_generated', config.defaults.attractor_cell.attraction_generated);
-            updateValues('stalk_cell', 'p_sprout', config.defaults.stalk_cell.p_sprout
-
-
 
 
     <!-- Optional JavaScript -->
