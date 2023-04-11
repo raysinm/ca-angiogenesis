@@ -4,16 +4,20 @@ import pandas as pd
 from enum import Enum
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from pathlib import Path
 
 # Colormap for visualization
 colors = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 0, 1)]
 cmap = mcolors.ListedColormap(colors)
 
 # Default global config file
+base_path = Path(__file__).parent
+file_path = (base_path / "../src/config.json").resolve()
 CONFIG = None
-with open("./config.json", "r") as config_file:
+with open(file_path, "r") as config_file:
     CONFIG = json.load(config_file)
 DEFAULTS = CONFIG["defaults"]
+GRAPHICS = CONFIG["graphics"]
 
 
 class GridStatistics():

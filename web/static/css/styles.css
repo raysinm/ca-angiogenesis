@@ -1,6 +1,6 @@
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: rgb(234, 234, 234);
+    background-color: rgb(127, 134, 137);
   }
   
   h1 {
@@ -10,9 +10,13 @@ body {
   }
   
   p1 {
-    font-size: 18px;
-    line-height: 1.5;
+    display: block;
     text-align: center;
+    font-size: 18px;
+  }
+
+  img {
+    display: block;
   }
   
   form {

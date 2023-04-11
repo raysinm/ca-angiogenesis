@@ -1,5 +1,8 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.animation import FuncAnimation
 
 from math import ceil, sqrt
 
@@ -79,6 +82,25 @@ class Engine():
                 y += 1
 
         plt.show()
+
+    def generate_animation_in_html(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # assuming your list of matrices is called 'matrix_list'
+        # images = [ for grid in self.history]
+
+        def update(frame):
+            mat = self.history[frame].to_matrix()
+            img = ax.imshow(mat, cmap=cmap, vmin=0, vmax=3)
+            # images[frame].set_data(mat)
+            ax.set_title(f"Generation {frame}")
+            return img,
+
+        ani = FuncAnimation(fig, update, frames=self.generations, interval=1, blit=True)
+        ani.save("../data/test4.mp4", writer='ffmpeg', fps=27)
+        
+        return ani.to_jshtml()
+
 
     def visualize_final_result(self):
         plt.imshow(self.history[-1].to_matrix(), cmap=cmap, vmin=0, vmax=3)

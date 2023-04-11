@@ -16,40 +16,40 @@
     <body>
         <h1> CA - Angiogenesis </h1>
         <p1>Cellular Automata Model of Angiogenesis.</p1>
-            <ul>
-            <li>List item 1</li>
-            <li>List item 2</li>
-            <li>List item 3</li>
-            </ul>
-            <img src="../static/image.png" alt="My Image">
-            <label for="name">Enter your name:</label>
-            <input type="text" id="name" name="name" maxlength="20">
-            <button id="greet">Push me don't worry</button>
-            <output id="result"></output>
 
-            <form action="/update_config" method="POST" name="parameters">
-                <label for="tip_cell_p_migrate">Tip cell p_migrate:</label>
-                <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate"><br>
-              
-                <label for="attractor_cell_attraction_generated">Attractor cell attraction_generated:</label>
-                <input type="number" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated"><br>
-              
-                <label for="stalk_cell_p_sprout">Stalk cell p_sprout:</label>
-                <input type="number" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout"><br>
-              
-                <label for="attraction_decay_coef">Attraction decay_coef:</label>
-                <input type="number" id="attraction_decay_coef" name="attraction_decay_coef"><br>
-              
-                <label for="attraction_update_precision">Attraction update_precision:</label>
-                <input type="number" id="attraction_update_precision" name="attraction_update_precision"><br>
-              
-                <input type="submit" value="Update Parameters">
-              </form>
+        <img src="../static/image.png" alt="My Image" id="img">
+
+        <form action="/update_config" method="POST" name="parameters">
+            <label for="tip_cell_p_migrate">Tip cell p_migrate:</label>
+            <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate"><br>
+            
+            <label for="attractor_cell_attraction_generated">Attractor cell attraction_generated:</label>
+            <input type="number" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated"><br>
+            
+            <label for="stalk_cell_p_sprout">Stalk cell p_sprout:</label>
+            <input type="number" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout" value="0.001"><br>
+            
+            <label for="attraction_decay_coef">Attraction decay_coef:</label>
+            <input type="number" id="attraction_decay_coef" name="attraction_decay_coef"><br>
+            
+            <label for="attraction_update_precision">Attraction update_precision:</label>
+            <input type="number" id="attraction_update_precision" name="attraction_update_precision"><br>
+            
+            <input type="submit" value="Run Simulation">
+        </form>
+
+        <div>
+            {% if animation_html %}
+            <h2>Simulation Results</h2>
+            <iframe srcdoc="{{ animation_html }}" width="800" height="600"></iframe>
+            {% endif %}
+
+        </div>
               
               
         <!-- <script src="../static/request_config.js"></script> -->
         <script src="../static/script.js"></script>
-        <script src="../static/parms.js"></script>
+        <!-- <script src="../static/params.js"></script> -->
 
     </body>
 </html>
