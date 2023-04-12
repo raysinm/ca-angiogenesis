@@ -13,20 +13,16 @@
         <!-- <link rel="stylesheet" href="../static/styles.css"> -->
         <title>CA - Angiogenesis</title>
     </head>
-    <body>
+    <body onload="animate( {{ matrix_list|tojson }} );">
         <h1> CA - Angiogenesis </h1>
         <p1>Cellular Automata Model of Angiogenesis.</p1>
-
+        
         <img src="../static/image.png" alt="My Image" id="img">
-
-        <div>
-            <canvas id="canvas" width="600" height="600"></canvas>
-        </div>
-        <script src="{{ url_for('static', filename='animation.js') }}"> 
-        // var matrix_list = {{ matrix_list|safe }};
-        var matrix_list = [[ [1,2],[2,1]], [[0,3],[3,0]] ];
-        console.log(matrix_list);
-        </script>
+        
+        <canvas id="canvas" width="600" height="600"></canvas>
+        <script id="animate-script" src="{{ url_for('static', filename='animation.js') }}"> </script>
+            
+            <!-- <div id="matrix_list">{{ matrix_list|tojson|safe }}</div> -->
         <form action="" method="POST" name="parameters">
             <label for="tip_cell_p_migrate">Tip Cell Migration Probability:</label>
             <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate"><br>
@@ -65,8 +61,8 @@
 
 
         <!-- <script src="../static/request_config.js"></script> -->
-        <script src="../static/script.js"></script>
-        <!-- <script src="../static/params.js"></script> -->
+        <!-- <script src="../static/script.js"></script>
+        <script src="../static/params.js"></script> -->
 
     </body>
 </html>

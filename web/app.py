@@ -28,7 +28,7 @@ def index():
     # Colormap for visualization
     colors = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 0, 1)]
     cmap = mcolors.ListedColormap(colors)
-
+    history = None
     if request.method == 'POST':
         update_config()
         history = vis()
@@ -45,11 +45,11 @@ def index():
 
         # # Pass the list of HTML strings to the template context
         # return render_template('index.html', figure_html_list=figure_html_list)
-        history_json = jsonify(history)
-
-        return render_template('index.html', matrix_list=history_json)
-    return render_template('index.html')
-
+        # history_json = jsonify(history)
+        # history_json = json.dumps(history)        # print(history_json)
+               # print(history_json)
+    return render_template('index.html', matrix_list=history)
+    
 @app.route('/update_config', methods=['POST'])
 def update_config():
     parameters = {}

@@ -240,7 +240,7 @@ class Grid:
             numpy array
         """
         output = np.full(shape=(self.height, self.width),
-                         fill_value=0, dtype=float)
+                         fill_value=0, dtype=int)
         for x in range(self.height):
             for y in range(self.width):
                 grid_cell = self.grid[x][y].cell
