@@ -13,7 +13,7 @@
         <!-- <link rel="stylesheet" href="../static/styles.css"> -->
         <title>CA - Angiogenesis</title>
     </head>
-    <body onload="animate( {{ matrix_list|tojson }} );">
+    <body>
         <h1> CA - Angiogenesis </h1>
         <p1>Cellular Automata Model of Angiogenesis.</p1>
         
@@ -22,8 +22,7 @@
         <canvas id="canvas" width="600" height="600"></canvas>
         <script id="animate-script" src="{{ url_for('static', filename='animation.js') }}"> </script>
             
-            <!-- <div id="matrix_list">{{ matrix_list|tojson|safe }}</div> -->
-        <form action="" method="POST" name="parameters">
+        <form method="POST" name="parameters" id="run-simulation-form">
             <label for="tip_cell_p_migrate">Tip Cell Migration Probability:</label>
             <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate"><br>
             
@@ -44,25 +43,6 @@
             
             <input type="submit" value="Run Simulation">
         </form>
-
-        <!-- <div>
-            {% if animation_html %}
-            <h2>Simulation Results</h2>
-            <iframe srcdoc="{{ animation_html }}" width="800" height="600"></iframe>
-            {% endif %}
-
-        </div>
-        {% for figure_html in figure_html_list %}
-        <div>{{ figure_html|safe }}</div>
-        {% endfor %}
-               -->
-	    <!-- <script type="text/javascript" src="{{ url_for('static', filename='animation.js') }}"></script> -->
-        
-
-
-        <!-- <script src="../static/request_config.js"></script> -->
-        <!-- <script src="../static/script.js"></script>
-        <script src="../static/params.js"></script> -->
 
     </body>
 </html>

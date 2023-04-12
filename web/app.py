@@ -13,43 +13,20 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    # animation_html = None
-    # if request.method == 'POST':
-    #     update_config()
-    #     # Call the vis function to generate the animation HTML
-    #     animation_html = vis()
-    #     # print(animation_html)
-    #     return render_template('index.html', animation_html=animation_html)
     
-
-    import mpld3
-    import matplotlib.pyplot as plt
-    import matplotlib.colors as mcolors
-    # Colormap for visualization
-    colors = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 0, 1)]
-    cmap = mcolors.ListedColormap(colors)
-    history = None
     if request.method == 'POST':
         update_config()
-        history = vis()
 
-        # Create a list to store the HTML for each figure
-        # figure_html_list = []
-
-        # Loop over each matrix and generate a Matplotlib figure
-        # for matrix in history:
-        #     fig, ax = plt.subplots()
-        #     ax.imshow(matrix, cmap=cmap, vmin=0, vmax=3)
-        #     fig_html = mpld3.fig_to_html(fig)
-        #     figure_html_list.append(fig_html)
-
-        # # Pass the list of HTML strings to the template context
-        # return render_template('index.html', figure_html_list=figure_html_list)
-        # history_json = jsonify(history)
-        # history_json = json.dumps(history)        # print(history_json)
-               # print(history_json)
-    return render_template('index.html', matrix_list=history)
+    return render_template('index.html')
     
+@app.route('/matrix_list')
+def response_matrix_list():
+    # check if request is made via AJAX
+    #if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    matrix_list = vis()
+    return jsonify(matrix_list)
+    return
+
 @app.route('/update_config', methods=['POST'])
 def update_config():
     parameters = {}
