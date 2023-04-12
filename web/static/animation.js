@@ -51,7 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById("run-simulation-form")
     form.addEventListener("submit", function(event){
         event.preventDefault();
-        fetch('/matrix_list')
+        const formData = new FormData(form);
+    
+        // First fetch to submit form data
+        fetch('/update_config', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Second fetch to get matrix_list
+            return fetch('/matrix_list');
+        })
         .then(response => response.json())
         .then(data => {
             console.log(data);

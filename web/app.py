@@ -14,8 +14,8 @@ app = Flask(__name__)
 @app.route('/', methods=['POST', 'GET'])
 def index():
     
-    if request.method == 'POST':
-        update_config()
+    # if request.method == 'POST':
+    #     update_config()
 
     return render_template('index.html')
     
