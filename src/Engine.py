@@ -46,6 +46,23 @@ class Engine():
         self.stats.update_clustering_coef(
             coef=self.history[-1].calc_clustering_coef())
 
+    def run_one(self):
+        if self.curr_gen < self.generations:
+            self.history.append(self.history[-1].next_gen())
+            # self.stats.update(gen=i, stats=self.history[-1].get_stats())
+            self.curr_gen += 1
+        # if self.curr_gen == self.generations:
+        #     self.stats.update_clustering_coef(
+        #     coef=self.history[-1].calc_clustering_coef()) 
+        return
+
+    def get_last_matrix(self):
+        return self.history[-1].to_matrix()
+    
+    def get_history_matrices(self, np_flag=True):
+        return [grid.to_matrix(np_flag) for grid in self.history]
+
+
     def get_stats(self) -> EngineStatistics:
         return self.stats
 
@@ -96,7 +113,7 @@ class Engine():
             ax.set_title(f"Generation {frame}")
             return img,
 
-        ani = FuncAnimation(fig, update, frames=self.generations, interval=1, blit=True)
+        ani = FuncAnimation(fig, update, frames=self.generations, interval=1000, blit=True)
         ani.save("../data/test4.mp4", writer='ffmpeg', fps=27)
         
         return ani.to_jshtml()

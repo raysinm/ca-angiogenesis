@@ -16,5 +16,6 @@ def vis():
     # Run the simulation
     engine.run()
 
-    return engine.generate_animation_in_html()
-
+    # return engine.generate_animation_in_html()
+    #TODO: Instead of passing booleans like a maniac, consider configuring a "web" mode
+    return engine.get_history_matrices(np_flag=False)

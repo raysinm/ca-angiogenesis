@@ -232,7 +232,7 @@ class Grid:
                     self[action.dst + cell_location].cell = TipCell()
                     self.stats.add_tip_cell()
 
-    def to_matrix(self):
+    def to_matrix(self, np_flag=True):
         """Convert a grid to a numpy matrix, each cell type gets another color. 
            Used for visualization.
 
@@ -251,6 +251,8 @@ class Grid:
                 if type(grid_cell) == AttractorCell:
                     output[x][y] = 3
 
+        if np_flag==False:
+            return output.tolist()
         return output
 
     def num_neighbors(self, location: Point) -> int:
