@@ -8,5 +8,8 @@
         {"p_sprout" : 0.008},
     "attraction" : {"decay_coef": 0.7, "update_precision": 0.001}        
     },
+    "grpahics": {
+      "generations" : 80  
+    },
     "debug": false
 }
