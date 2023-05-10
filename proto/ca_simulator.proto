@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ca_simulator;
+
+service SimEngine {
+    rpc ShowSim (SimRequest) returns (SimReply) {}
+}
+
+message SimRequest {
+    string params = 1;
+}
+
+message SimReply { 
+    string simulation = 1;
+}
