@@ -31,4 +31,19 @@ engine.run()
 
 
 #DEBUG Basic check if this function works (print the gif json) ---no idea if the gif is correct.
-print(engine.generate_animation_in_json_gif())
+
+import json
+import base64
+from io import BytesIO
+from PIL import Image
+
+json_str = engine.generate_animation_in_json_gif()
+json_obj = json.loads(json_str)
+gif_base64 = json_obj['animation']
+gif_bytes = base64.b64decode(gif_base64)
+
+with open('animation.gif', 'wb') as f:
+    f.write(gif_bytes)
+gif_img = Image.open('animation.gif')
+
+gif_img.show()

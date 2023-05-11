@@ -1,13 +1,35 @@
 function ShowAnimation(gifData){
-    const response = JSON.parse(giData); 
-    // create an image element
+    // const response = JSON.parse(gifData); 
+    // animation_gif = response['animation'];
+    // // create an image element
+    // // const img = document.createElement('img');
+    // const img = new Image();
+
+    
+    // img.onload = function() {
+    //     document.getElementById('animation-container').innerHTML = '';  //TODO: add caching?
+    //     document.getElementById('animation-container').appendChild(img);
+    // };
+
+    // // set the src attribute of the image element to the base64-encoded string
+    // img.src = "data:image/gif;base64," + animation_gif;
+    
+    // // add the image element to the container
+    // document.getElementById('animation-container').appendChild(img);
+
+    const response = JSON.parse(gifData);
+    const animation_gif = response['animation'];
+
+    // create a new image element
     const img = document.createElement('img');
     
     // set the src attribute of the image element to the base64-encoded string
-    img.src = "data:image/gif;base64," + response;
+    img.src = 'data:image/gif;base64,' + animation_gif;
     
     // add the image element to the container
-    document.getElementById('animation-container').appendChild(img);
+    const container = document.getElementById('animation-container');
+    container.innerHTML = '';
+    container.appendChild(img);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

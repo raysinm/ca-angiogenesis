@@ -14,8 +14,8 @@ class SimEngineStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ShowSim = channel.unary_unary(
-                '/ca_simulator.SimEngine/ShowSim',
+        self.RunSimulationGif = channel.unary_unary(
+                '/ca_simulator.SimEngine/RunSimulationGif',
                 request_serializer=ca__simulator__pb2.SimRequest.SerializeToString,
                 response_deserializer=ca__simulator__pb2.SimReply.FromString,
                 )
@@ -24,7 +24,7 @@ class SimEngineStub(object):
 class SimEngineServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def ShowSim(self, request, context):
+    def RunSimulationGif(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,8 +33,8 @@ class SimEngineServicer(object):
 
 def add_SimEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'ShowSim': grpc.unary_unary_rpc_method_handler(
-                    servicer.ShowSim,
+            'RunSimulationGif': grpc.unary_unary_rpc_method_handler(
+                    servicer.RunSimulationGif,
                     request_deserializer=ca__simulator__pb2.SimRequest.FromString,
                     response_serializer=ca__simulator__pb2.SimReply.SerializeToString,
             ),
@@ -49,7 +49,7 @@ class SimEngine(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def ShowSim(request,
+    def RunSimulationGif(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class SimEngine(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ca_simulator.SimEngine/ShowSim',
+        return grpc.experimental.unary_unary(request, target, '/ca_simulator.SimEngine/RunSimulationGif',
             ca__simulator__pb2.SimRequest.SerializeToString,
             ca__simulator__pb2.SimReply.FromString,
             options, channel_credentials,

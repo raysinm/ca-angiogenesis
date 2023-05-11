@@ -3,7 +3,7 @@ syntax = "proto3";
 package ca_simulator;
 
 service SimEngine {
-    rpc ShowSim (SimRequest) returns (SimReply) {}
+    rpc RunSimulationGif (SimRequest) returns (SimReply) {}
 }
 
 message SimRequest {

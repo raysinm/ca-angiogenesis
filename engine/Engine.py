@@ -3,7 +3,8 @@ matplotlib.use('Agg')
 import base64
 import json
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
+import os
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.animation import FuncAnimation
@@ -107,34 +108,46 @@ class Engine():
 
     def generate_animation_in_json_gif(self):
         frames = []
+        image_sequence = []
         for i, grid in enumerate(self.history):
             # create an image from the matrix, with colors based on the values
             matrix = grid.to_matrix()
-            matrix = np.repeat(matrix[:, :, np.newaxis], 4, axis=-1)
-            # print(matrix.shape)
-            img = Image.fromarray(np.uint8(matrix*255), mode='RGBA')
-            
-            # create a new image with the same dimensions as the original image
-            new_img = Image.new(mode="RGBA", size=(grid.get_width(),grid.get_height()), color=(255,255,255,0))
-            # draw the colored pixels on the new image
-            draw = ImageDraw.Draw(new_img)
+                
+            lookup = np.array([(0, 0, 0, 255), (255, 0, 0, 255), (255, 255, 0, 255), (0, 0, 255, 255)])
 
-            draw.bitmap((0, 0), img)
+            # map the values in the matrix to the corresponding colors
+            matrix = lookup[matrix]
+            
+            img = Image.fromarray(np.asarray(matrix, dtype=np.uint8), mode='RGBA')
+            img = ImageOps.fit(img, (480, 480), method=Image.NEAREST)
+    
+            # create a new image with the same dimensions as the original image
+            new_img = Image.new(mode="RGBA", size=(grid.get_width(),grid.get_height()), color=(0,0,0,255))
+            
+            new_img = ImageOps.fit(new_img, (480, 490), method=Image.NEAREST)
+            
+            # draw the colored pixels on the new image
+            draw = ImageDraw.Draw(new_img, mode="RGBA")
+
+            # draw.bitmap((0, 0), img)
+            new_img.paste(img, box=(0,10))
             title = f"Generation {i}"
             font = ImageFont.load_default()
             text_width, text_height = draw.textsize(title, font=font)
             x = (new_img.width - text_width) / 2
-            draw.text((x, 10), title, font=font, fill=255)
-            
-            # save the new image to a buffer
-            with BytesIO() as buffer:
-                new_img.save(buffer, format="GIF")
-                frame = buffer.getvalue()
-            frames.append(frame)
+            draw.text((x, 10), title, font=font, fill="white")
 
-        # create a base64-encoded string from the list of frames
-        gif_bytes = b"".join(frames)
-        gif_base64 = base64.b64encode(gif_bytes).decode('utf-8')
+            image_sequence.append(new_img.copy())
+
+        print(f"self.history length: {len(self.history)}")
+        print(f"image_sequence length: {len(image_sequence)}")
+
+        temp_filename = "./temp/animation.gif"
+        image_sequence[0].save(temp_filename, format="GIF", save_all=True, append_images=image_sequence, duration=100)
+        with open(temp_filename, 'rb') as f:
+            gif_bytes = f.read()
+            gif_base64 = base64.b64encode(gif_bytes).decode('utf-8')
+        os.remove(temp_filename)
 
         # create the JSON response object
         response = {'animation': gif_base64, 'type': 'gif'}

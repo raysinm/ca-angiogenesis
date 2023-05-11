@@ -1,9 +1,13 @@
 import numpy as np
 from enum import Enum
 from random import uniform, choices
+import json
 
-from utils import CONFIG, attraction_to_radius, attraction_decay, Action, ActionType, ContextRequest, Point, ModifierType, visualize_probabilities
+from utils import attraction_to_radius, attraction_decay, Action, ActionType, ContextRequest, Point, ModifierType, visualize_probabilities
 
+CONFIG = None
+with open("./config.json", "r") as config_file:
+    CONFIG = json.load(config_file)
 
 class CellStatus(Enum):
     DEAD = 0

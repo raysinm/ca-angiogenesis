@@ -17,35 +17,35 @@
         <h1> CA - Angiogenesis </h1>
         <p1>Cellular Automata Model of Angiogenesis.</p1>
         
-        <img src="../static/image.png" alt="My Image" id="img">
+        <!-- <img src="../static/image.png" alt="My Image" id="img"> -->
         
-        <canvas id="canvas" width="600" height="600"></canvas>
-        <script id="animate-script" src="{{ url_for('static', filename='animation.js') }}"> </script>
-            
+        <!-- <canvas id="canvas" width="600" height="600"></canvas> -->
+        <!-- <script id="animate-script" src="{{ url_for('static', filename='animation.js') }}"> </script>
+         -->
+        <div id="animation-container"></div>
+        
         <form method="POST" name="parameters" id="run-simulation-form">
             <label for="tip_cell_p_migrate">Tip Cell Migration Probability:</label>
-            <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate"><br>
+            <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate" step="0.001"><br>
             
             <label for="attractor_cell_attraction_generated">Attractor Cell Attracion Intensity:</label>
-            <input type="number" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated"><br>
+            <input type="number" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated" step="0.001"><br>
             
             <label for="stalk_cell_p_sprout">Stalk Cell Sprouting Probability:</label>
-            <input type="number" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout" value="0.001"><br>
+            <input type="number" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout" step="0.001" value="0.005"><br>
             
             <label for="attraction_decay_coef">Attraction Decay Coefficient:</label>
-            <input type="number" id="attraction_decay_coef" name="attraction_decay_coef"><br>
+            <input type="number" id="attraction_decay_coef" name="attraction_decay_coef" step="0.001"><br>
             
             <label for="attraction_update_precision">Attraction Precision:</label>
-            <input type="number" id="attraction_update_precision" name="attraction_update_precision"><br>
+            <input type="number" id="attraction_update_precision" name="attraction_update_precision" step="0.001"><br>
             
             <label for="graphics_generations">Number of Generations:</label>
-            <input type="number" id="graphics_generations" name="graphics_generations"><br>
+            <input type="number" id="graphics_generations" name="graphics_generations" step="0.001"><br>
             
             <input type="submit" value="Run Simulation">
         </form>
 
-        <div id="animation-container"></div>
-        
         <script src="../static/animation.js"></script>
     </body>
 </html>
