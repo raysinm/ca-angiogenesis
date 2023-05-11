@@ -105,48 +105,16 @@ class Engine():
 
         plt.show()
 
-    # def generate_animation_in_json_gif(self):
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(111)
-    #     # assuming your list of matrices is called 'matrix_list'
-    #     # images = [ for grid in self.history]
-
-    #     def update(frame):
-    #         mat = self.history[frame].to_matrix()
-    #         img = ax.imshow(mat, cmap=cmap, vmin=0, vmax=3)
-    #         # images[frame].set_data(mat)
-    #         ax.set_title(f"Generation {frame}")
-    #         return img,
-
-    #     ani = FuncAnimation(fig, update, frames=self.generations, interval=1000, blit=True)
-    #     with BytesIO() as buffer:
-    #         ani.save(buffer, writer='pillow', fps=27)
-    #         anim_bytes = buffer.getvalue()
-
-    #     # Encode the animation as a base64 string
-    #     anim_base64 = base64.b64encode(anim_bytes).decode('utf-8')
-
-    #     # Create the JSON response object
-    #     response = {'animation': anim_base64, 'type': 'gif'}
-
-    #     return json.dumps(response)
-
     def generate_animation_in_json_gif(self):
         frames = []
         for i, grid in enumerate(self.history):
             # create an image from the matrix, with colors based on the values
             matrix = grid.to_matrix()
             matrix = np.repeat(matrix[:, :, np.newaxis], 4, axis=-1)
-            # matrix = np.expand_dims(matrix, axis=2)
             # print(matrix.shape)
             img = Image.fromarray(np.uint8(matrix*255), mode='RGBA')
-            # img.putpalette([
-            #     0, 0, 0,  # black
-            #     255, 0, 0,  # red
-            #     255, 255, 0,  # yellow
-            #     0, 0, 255  # blue
-            # ])
-            # create a new image with the same dimensions as the original image, but in "P" mode (8-bit pixels)
+            
+            # create a new image with the same dimensions as the original image
             new_img = Image.new(mode="RGBA", size=(grid.get_width(),grid.get_height()), color=(255,255,255,0))
             # draw the colored pixels on the new image
             draw = ImageDraw.Draw(new_img)
@@ -172,27 +140,7 @@ class Engine():
         response = {'animation': gif_base64, 'type': 'gif'}
 
         return json.dumps(response)
-        # for grid in self.history:
-        #     matrix = grid.to_matrix()
-        #     # Assuming that your matrix is a 2D numpy array
-        #     img = Image.fromarray(matrix.astype('uint8'))
-        #     images.append(img)
-
-        # # Create an in-memory buffer to store the GIF
-        # with BytesIO() as buffer:
-        #     # Save the GIF using PIL's built-in GIF writer
-        #     images[0].save(buffer, format='GIF', save_all=True, append_images=images[1:], optimize=True, duration=1000/27, loop=0)
-
-        #     # Get the bytes from the buffer
-        #     gif_bytes = buffer.getvalue()
-
-        # # Encode the GIF as a base64 string
-        # gif_base64 = base64.b64encode(gif_bytes).decode('utf-8')
-
-        # # Create the JSON response object
-        # response = {'animation': gif_base64, 'type': 'gif'}
-
-        # return json.dumps(response)
+        
 
 
 
