@@ -2,7 +2,6 @@ import matplotlib
 matplotlib.use('Agg')
 import base64
 import json
-from io import BytesIO
 import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import matplotlib.pyplot as plt
@@ -138,9 +137,6 @@ class Engine():
             draw.text((x, 10), title, font=font, fill="white")
 
             image_sequence.append(new_img.copy())
-
-        print(f"self.history length: {len(self.history)}")
-        print(f"image_sequence length: {len(image_sequence)}")
 
         temp_filename = "./temp/animation.gif"
         image_sequence[0].save(temp_filename, format="GIF", save_all=True, append_images=image_sequence, duration=100)

@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+  engine-server:
+    container_name: engine-server
+    build: ./engine
+    ports:
+      - "50051:50051"
+    networks:
+      - grpc-network
+    hostname: engine-server
+    working_dir: /opt/engine
+    command: python3 engine_server.py
+
+  web-client:
+    container_name: web-client
+    build: ./web
+    ports:
+      - "80:5000"
+    networks:
+      - grpc-network
+    hostname: web-client
+    depends_on:
+      - engine-server
+    environment: 
+      - FLASK_APP=app
+    working_dir: /app/web
+    command: flask run --host=0.0.0.0
+      
+  
+networks:
+  grpc-network:
+    driver: bridge

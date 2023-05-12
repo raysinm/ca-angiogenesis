@@ -15,8 +15,10 @@ import Engine
 import Grid
 import utils
 
-
-
+from pathlib import Path
+# Default global config file
+base_path = Path(__file__).parent
+config_path = (base_path / "../engine/config.json").resolve()
 
 class SimEngine(ca_simulator_pb2_grpc.SimEngineServicer):
 
@@ -24,7 +26,7 @@ class SimEngine(ca_simulator_pb2_grpc.SimEngineServicer):
         
         # ----- Updating parameters for simulation ----- #
         
-        with open("./config.json", 'r') as f:
+        with open(config_path, 'r') as f:
             config_data = json.load(f)
 
         new_params = json.loads(request.params)
@@ -37,7 +39,7 @@ class SimEngine(ca_simulator_pb2_grpc.SimEngineServicer):
         if new_params_generations != None and new_params_generations != '':
             config_data['graphics']['generations'] = int(new_params_generations)    
         # Write the updated data back to the file
-        with open("./config.json", 'w') as f:
+        with open(config_path, 'w') as f:
             json.dump(config_data, f, indent=4)
 
         # ----- Running simulation ----- #  #TODO: add an option to choose a different init board
@@ -69,6 +71,7 @@ def serve():
     ca_simulator_pb2_grpc.add_SimEngineServicer_to_server(SimEngine(), server)
     server.add_insecure_port('[::]:' + port)
     server.start()
+    print("Engine server running")
     server.wait_for_termination()
 
 if __name__ == "__main__":
