@@ -1,44 +1,40 @@
 function ShowAnimation(gifData){
-    // const response = JSON.parse(gifData); 
-    // animation_gif = response['animation'];
-    // // create an image element
-    // // const img = document.createElement('img');
-    // const img = new Image();
-
-    
-    // img.onload = function() {
-    //     document.getElementById('animation-container').innerHTML = '';  //TODO: add caching?
-    //     document.getElementById('animation-container').appendChild(img);
-    // };
-
-    // // set the src attribute of the image element to the base64-encoded string
-    // img.src = "data:image/gif;base64," + animation_gif;
-    
-    // // add the image element to the container
-    // document.getElementById('animation-container').appendChild(img);
 
     const response = JSON.parse(gifData);
     const animation_gif = response['animation'];
 
-    // create a new image element
+    // Create a new image element
     const img = document.createElement('img');
     
-    // set the src attribute of the image element to the base64-encoded string
+    // Set the src attribute of the image element to the base64-encoded string
     img.src = 'data:image/gif;base64,' + animation_gif;
     
-    // add the image element to the container
+    // Remove previous animation and add the new one to the container
     const container = document.getElementById('animation-container');
     container.innerHTML = '';
     container.appendChild(img);
+
+    // Hide the loading bar
+    loadingContainer = document.getElementById('loading-container');
+    loadingContainer.style.display = '';
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("dom")
-    const form = document.getElementById("run-simulation-form")
+    console.log("dom");
+    const form = document.getElementById("run-simulation-form");
+    const submitButton = form.querySelector('input[type="submit"]');
+    const loadingContainer = document.getElementById('loading-container');
     form.addEventListener("submit", function(event){
         event.preventDefault();
         const formData = new FormData(form);
     
+
+        // Show the loading container
+        loadingContainer.style.display = 'block';
+        
+        // Disable the submit button
+        submitButton.disabled = true;
+
         // First fetch to submit form data
         fetch('/run_simulation', {
             method: 'POST',
@@ -48,14 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            // // Enable the submit button
+            // submitButton.disabled = false;
             // Returns a json gif
             return response.json()
         })
         .then(data => {
             console.log(data);
             ShowAnimation(data) //Danger: Whats being passed
+            // Enable the submit button
+            submitButton.disabled = false;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            console.error(error);
+            // Enable the submit button
+            submitButton.disabled = false;
+        });
     });
 });
  

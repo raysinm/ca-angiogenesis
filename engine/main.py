@@ -12,7 +12,7 @@ grid = Grid(width=60, height=60,
             init_config=initial_states.init_config_stalk_middle)
 
 # Create an instance of the engine, with the initial grid
-engine = Engine(init_grid=grid, generations=81)
+engine = Engine(init_grid=grid, generations=0)
 
 # Run the simulation
 engine.run()
@@ -46,4 +46,4 @@ with open('animation.gif', 'wb') as f:
     f.write(gif_bytes)
 gif_img = Image.open('animation.gif')
 
-gif_img.show()
+# gif_img.show()

@@ -17,4 +17,4 @@ COPY . /opt/engine
 # EXPOSE 50051
 
 # Start the gRPC server
-CMD [ "python3", "engine_server.py" ]
+# CMD [ "python3", "engine_server.py" ]

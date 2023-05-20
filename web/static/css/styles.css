@@ -1,53 +1,163 @@
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: rgb(127, 134, 137);
-  }
-  
-  h1 {
-    color: rgb(33, 11, 114);
-    font-size: 40px;
-    text-align: center;
-  }
-  
-  p1 {
-    display: block;
-    text-align: center;
-    font-size: 18px;
-  }
+/* Reset default browser styles */
+body,
+h1,
+p1 {
+  margin: 0;
+  padding: 0;
+}
 
-  img {
-    display: block;
-  }
+/* Set a base font and background color */
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f2f2f2;
+}
+
+/* Add some spacing and center the content */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
+  text-align: center;
+}
+
+.heading {
+  text-align: center;
+  padding: 2%;
+}
+
+.heading h1{
+  font-size: 32px;
+  font-weight: bold;
+  padding-bottom: 1%;
+}
+.heading p1{
+  font-size: 18px;
+  color: #230095;
+}
+
+/* Style the heading */
+/* h1 {
   
-  form {
-    margin-top: 20px;
-  }
+} */
+
+/* Style the paragraph */
+/* p1 {
+
+  text-align: center;
+} */
+
+#form-and-animation {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+#form-and-animation #run-simulation-form {
+  order: 1;
+  width: 50%;
+  /* gap: 4px; */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-left: 20px;
+}
+
+#form-and-animation #run-simulation-form .form-element {
+  /* border:#ccc; */
+  /* display: block; */
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+}
+
+#form-and-animation label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+#form-and-animation input[type="number"] {
+  width: 200px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+#form-and-animation input[type="range"] {
+  width: 200px;
+  /* padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc; */
+}
+
+#form-and-animation .buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 50px;
   
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
+}
+
+#form-and-animation input[type="submit"] {
+  width: 200px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #230095;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+#form-and-animation input[type="submit"]:hover {
+  background-color: #b5b8f6;
+}
+
+#form-and-animation #reset-all-button {
+  width: 200px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #730831;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+#form-and-animation #reset-all-button:hover {
+  background-color: #f9d9e5;
+}
+
+
+#form-and-animation #animation-container {
+  order: 2;
+  flex-grow: 1;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   
-  input[type="text"] {
-    padding: 5px;
-    font-size: 16px;
-    border: none;
-    border-radius: 3px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  }
+
+}
+
+
+/* Style the form
+#run-simulation-form {
+
+} */
+/* 
+#animation-container {
   
-  button {
-    padding: 5px 10px;
-    background-color: blue;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  #greeting {
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
+} */
+
+
+
+
+
+
+
+
+
+
+/* Adjust the size of the animation */
