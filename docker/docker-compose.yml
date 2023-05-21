@@ -2,8 +2,8 @@ version: '3'
 services:
 
   engine-server:
-    image: raysinm/ca-angiogenesis:engine-latest
     container_name: engine-server
+    build: ../engine
     ports:
       - "50051:50051"
     networks:
@@ -13,8 +13,8 @@ services:
     command: python3 engine_server.py
 
   web-client:
-    image: raysinm/ca-angiogenesis:web-latest
     container_name: web-client
+    build: ../web
     ports:
       - "80:5000"
     networks:

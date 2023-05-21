@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  engine-server:
+    container_name: engine-server
+    build: ../engine
+    
+    ports:
+      - "50051:50051"
+    networks:
+      - grpc-network
+    hostname: engine-server
+    working_dir: /opt/engine
+    command: python3 engine_server.py
+
+
+networks:
+  grpc-network:
+    driver: bridge
