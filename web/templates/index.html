@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
+        <!-- <link rel="stylesheet" href="../static/styles.css"> -->
+        <title>CA - Angiogenesis</title>
+    </head>
+    <body>
+        <div class="heading">
+            <h1> CA - Angiogenesis </h1>
+            <p1 class="subtitle">Cellular Automata Model of Angiogenesis<br></p1>
+        </div>
+        <div class="info">
+            <p2 >
+                This is a probabilistic model of in-vivo vascular network formation based on a cellular automaton.<br>
+                Red squares = Stalk cells<br>
+                Yellow squares = Tip cells<br>
+                Blue square(s) = Attractor cells<br>
+                The goal is to form a network starting from the given red stalk cells and reaching the blue attractor cells, which is not too dense and not too shallow.<br>
+                <br>
+                Each parameter will have some effect on the final network shape. <br>
+                We recommend playing around with the following parameters:<br>
+                1. (Stalk cell) Sprouting Probability - the higher the value, the denser the network.<br>
+                2. (Attraction) Decay Coefficient - the lower the value, the smaller the chance of cells moving towards the attractor, the higher it is- the more linear the shape of the network will be.<br>
+                <br>
+                Notice that many configurations can slow down the loading time drastically.<br>
+                Better and faster versions are under development.<br>
+                <br>
+                For more information, visit https://github.com/raysinm/ca-angiogenesis/blob/master/project-report.pdf<br>
+                <br>
+                Thank you!<br>
+                -Maya Raysin and Matan Hoory<br>
+                
+            </p2>
+        </div>
+            <div id="form-and-animation">
+                <div id="animation-container">
+                <img src="../static/place-holder.gif" alt="Animation Placeholder">
+                <div id="loading-container" style="display: none;">
+                    <p>Loading...</p>
+                </div>
+            </div>
+            
+            <form method="POST" name="parameters" id="run-simulation-form">
+                <label for="tip_cell_p_migrate">Tip Cell Migration Probability:</label>
+                <div class="form-element">
+                    <input type="range" id="tip_cell_p_migrate" name="tip_cell_p_migrate" min="0" max="1" step="0.001" value="0.9">
+                    <input type="number" id="tip_cell_p_migrate" name="tip_cell_p_migrate" min="0" max="1" step="0.001" value="0.9">
+                    <button type="button" class="reset-button" data-input-id="tip_cell_p_migrate">Reset</button>
+                </div>
+
+                <label for="attractor_cell_attraction_generated">Attractor Cell Attracion Intensity:</label>
+                <div class="form-element">
+                    <input type="range" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated" min="1e+17" max="1e+19" step="100" value="1e+18">
+                    <input type="number" id="attractor_cell_attraction_generated" name="attractor_cell_attraction_generated" min="1e+17" max="1e+19" step="100" value="1e+18">
+                    <button type="button" class="reset-button" data-input-id="attractor_cell_attraction_generated">Reset</button>
+                </div>
+                
+                <label for="stalk_cell_p_sprout">Stalk Cell Sprouting Probability:</label>
+                <div class="form-element">
+                    <input type="range" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout" min="0" max="1" step="0.001" value="0.005">
+                    <input type="number" id="stalk_cell_p_sprout" name="stalk_cell_p_sprout" min="0" max="1" step="0.001" value="0.005">
+                    <button type="button" class="reset-button" data-input-id="stalk_cell_p_sprout">Reset</button>
+                </div>
+                
+                <label for="attraction_decay_coef">Attraction Decay Coefficient:</label>
+                <div class="form-element">
+                    <input type="range" id="attraction_decay_coef" name="attraction_decay_coef" min="0" max="3" step="0.001" value="0.7">
+                    <input type="number" id="attraction_decay_coef" name="attraction_decay_coef" min="0" max="3" step="0.001" value="0.7">
+                    <button type="button" class="reset-button" data-input-id="attraction_decay_coef">Reset</button>
+                </div>
+
+                <label for="attraction_update_precision">Attraction Precision:</label>
+                <div class="form-element">
+                    <input type="range" id="attraction_update_precision" name="attraction_update_precision" min="0" max="0.1" step="0.001" value="0.001">
+                    <input type="number" id="attraction_update_precision" name="attraction_update_precision" min="0" max="0.1" step="0.001" value="0.001">
+                    <button type="button" class="reset-button" data-input-id="attraction_update_precision">Reset</button>
+                </div>
+                
+                <label for="graphics_generations">Number of Generations:</label>
+                <div class="form-element">
+                    <input type="range" id="graphics_generations" name="graphics_generations" min="1" max="200" step="1" value="50">
+                    <input type="number" id="graphics_generations" name="graphics_generations" min="1" max="200" step="1" value="50">
+                    <button type="button" class="reset-button" data-input-id="graphics_generations">Reset</button>
+                </div>
+                
+                <div class="buttons">
+                    <button type="button" id="reset-all-button">Reset All</button>
+                    <input type="submit" value="Run Simulation">
+                </div>
+            </form>
+            <script src="../static/update_range.js"></script>
+            <script src="../static/animation.js"></script>
+        </div>
+    </body>
+</html>

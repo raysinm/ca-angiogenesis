@@ -1,7 +1,14 @@
+import matplotlib
+matplotlib.use('Agg')
+import base64
+import json
+import os
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 from math import ceil, sqrt
+import numpy as np
 
 from Grid import Grid
 from utils import EngineStatistics, vis_stats_cells, vis_stats_density
@@ -43,6 +50,23 @@ class Engine():
         self.stats.update_clustering_coef(
             coef=self.history[-1].calc_clustering_coef())
 
+    def run_one(self):
+        if self.curr_gen < self.generations:
+            self.history.append(self.history[-1].next_gen())
+            # self.stats.update(gen=i, stats=self.history[-1].get_stats())
+            self.curr_gen += 1
+        # if self.curr_gen == self.generations:
+        #     self.stats.update_clustering_coef(
+        #     coef=self.history[-1].calc_clustering_coef()) 
+        return
+
+    def get_last_matrix(self):
+        return self.history[-1].to_matrix()
+    
+    def get_history_matrices(self, np_flag=True):
+        return [grid.to_matrix(np_flag) for grid in self.history]
+
+
     def get_stats(self) -> EngineStatistics:
         return self.stats
 
@@ -79,6 +103,55 @@ class Engine():
                 y += 1
 
         plt.show()
+
+    def generate_animation_in_json_gif(self):
+        frames = []
+        image_sequence = []
+        for i, grid in enumerate(self.history):
+            # create an image from the matrix, with colors based on the values
+            matrix = grid.to_matrix()
+                
+            lookup = np.array([(0, 0, 0, 255), (255, 0, 0, 255), (255, 255, 0, 255), (0, 0, 255, 255)])
+
+            # map the values in the matrix to the corresponding colors
+            matrix = lookup[matrix]
+            
+            img = Image.fromarray(np.asarray(matrix, dtype=np.uint8), mode='RGBA')
+            img = ImageOps.fit(img, (480, 480), method=Image.NEAREST)
+    
+            # create a new image with the same dimensions as the original image
+            new_img = Image.new(mode="RGBA", size=(grid.get_width(),grid.get_height()), color=(0,0,0,255))
+            
+            new_img = ImageOps.fit(new_img, (480, 490), method=Image.NEAREST)
+            
+            # draw the colored pixels on the new image
+            draw = ImageDraw.Draw(new_img, mode="RGBA")
+
+            # draw.bitmap((0, 0), img)
+            new_img.paste(img, box=(0,10))
+            title = f"Generation {i}"
+            font = ImageFont.load_default()
+            text_width, text_height = draw.textsize(title, font=font)
+            x = (new_img.width - text_width) / 2
+            draw.text((x, 10), title, font=font, fill="white")
+
+            image_sequence.append(new_img.copy())
+
+        temp_filename = "./temp/animation.gif"
+        image_sequence[0].save(temp_filename, format="GIF", save_all=True, append_images=image_sequence, duration=100)
+        with open(temp_filename, 'rb') as f:
+            gif_bytes = f.read()
+            gif_base64 = base64.b64encode(gif_bytes).decode('utf-8')
+        os.remove(temp_filename)
+
+        # create the JSON response object
+        response = {'animation': gif_base64, 'type': 'gif'}
+
+        return json.dumps(response)
+        
+
+
+
 
     def visualize_final_result(self):
         plt.imshow(self.history[-1].to_matrix(), cmap=cmap, vmin=0, vmax=3)

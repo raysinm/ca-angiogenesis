@@ -1,0 +1,131 @@
+/* Reset default browser styles */
+/* body,
+h1,
+p1 {
+  margin: 0;
+  padding: 0;
+} */
+
+/* Set a base font and background color */
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f2f2f2;
+}
+
+.heading {
+  padding: 1%;
+  text-align: center;
+}
+
+.heading h1{
+  text-align: center;
+  font-size: xx-large;
+  font-weight: bold;
+  padding-bottom: 0.5%;
+}
+.heading .subtitle {
+  text-align: center;
+  font-size: x-large;
+  color: #190a4a;
+  padding-bottom: 2%;
+}
+
+.info{
+  text-align: left;
+  padding: 1%;
+  font-size: medium;
+  color: #190a4a;
+  padding-bottom: 2%;
+}
+#form-and-animation {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+#form-and-animation #run-simulation-form {
+  order: 1;
+  width: 50%;
+  /* gap: 4px; */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-left: 20px;
+}
+
+#form-and-animation #run-simulation-form .form-element {
+  /* border:#ccc; */
+  /* display: block; */
+  padding: 1%;
+  display: flex;
+  flex-direction: row;
+}
+
+#form-and-animation label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+#form-and-animation input[type="number"] {
+  width: 200px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#form-and-animation input[type="range"] {
+  width: 300px;
+  color: #190a4a;
+}
+
+#form-and-animation .buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 50px;
+  
+}
+
+#form-and-animation input[type="submit"] {
+  width: 200px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #230095;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+#form-and-animation input[type="submit"]:hover {
+  background-color: #b5b8f6;
+}
+
+#form-and-animation #reset-all-button {
+  width: 200px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #730831;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+#form-and-animation #reset-all-button:hover {
+  background-color: #f9d9e5;
+}
+
+
+#form-and-animation #animation-container {
+  order: 2;
+  flex-grow: 1;
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+
+}
+
+

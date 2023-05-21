@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  web-client:
+    container_name: web-client
+    build: ../web
+    ports:
+      - "80:5000"
+    networks:
+      - grpc-network
+    hostname: web-client
+    depends_on:
+      - engine-server
+    environment: 
+      - FLASK_APP=app
+    working_dir: /app/web
+    command: flask run --host=0.0.0.0
+
+
+networks:
+  grpc-network:
+    driver: bridge

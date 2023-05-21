@@ -1,9 +1,17 @@
 import numpy as np
 from enum import Enum
 from random import uniform, choices
+import json
+from pathlib import Path
 
-from utils import CONFIG, attraction_to_radius, attraction_decay, Action, ActionType, ContextRequest, Point, ModifierType, visualize_probabilities
+from utils import attraction_to_radius, attraction_decay, Action, ActionType, ContextRequest, Point, ModifierType, visualize_probabilities
 
+# Default global config file
+base_path = Path(__file__).parent
+file_path = (base_path / "../engine/config.json").resolve()
+CONFIG = None
+with open(file_path, "r") as config_file:
+    CONFIG = json.load(config_file)
 
 class CellStatus(Enum):
     DEAD = 0
