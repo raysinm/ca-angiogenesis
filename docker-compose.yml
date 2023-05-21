@@ -2,6 +2,7 @@ version: '3'
 services:
 
   engine-server:
+    image: raysinm/ca-angiogenesis:engine-latest
     container_name: engine-server
     build: ./engine
     ports:
@@ -13,6 +14,7 @@ services:
     command: python3 engine_server.py
 
   web-client:
+    image: raysinm/ca-angiogenesis:web-latest
     container_name: web-client
     build: ./web
     ports:
@@ -26,7 +28,7 @@ services:
       - FLASK_APP=app
     working_dir: /app/web
     command: flask run --host=0.0.0.0
-      
+  
   
 networks:
   grpc-network:

@@ -6,7 +6,6 @@ import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from matplotlib.animation import FuncAnimation
 
 from math import ceil, sqrt
 import numpy as np

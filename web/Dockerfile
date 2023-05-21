@@ -1,7 +1,9 @@
-FROM ubuntu:22.04
+FROM python:3.10
 
-RUN apt-get update && apt-get install -y iputils-ping
-RUN apt-get install -y python3.10 python3-pip
+# RUN apt-get update && apt-get install -y iputils-ping
+# RUN apt-get install -y python3.10 python3-pip
+# RUN apk add --no-cache build-base
+
 
 WORKDIR /app
 
