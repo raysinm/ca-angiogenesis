@@ -16,11 +16,33 @@
     <body>
         <div class="heading">
             <h1> CA - Angiogenesis </h1>
-            <p1>Cellular Automata Model of Angiogenesis.</p1>
+            <p1 class="subtitle">Cellular Automata Model of Angiogenesis<br></p1>
         </div>
-
-        <div id="form-and-animation">
-            <div id="animation-container">
+        <div class="info">
+            <p2 >
+                This is a probabilistic model of in-vivo vascular network formation based on a cellular automaton.<br>
+                Red squares = Stalk cells<br>
+                Yellow squares = Tip cells<br>
+                Blue square(s) = Attractor cells<br>
+                The goal is to form a network starting from the given red stalk cells and reaching the blue attractor cells, which is not too dense and not too shallow.<br>
+                <br>
+                Each parameter will have some effect on the final network shape. <br>
+                We recommend playing around with the following parameters:<br>
+                1. (Stalk cell) Sprouting Probability - the higher the value, the denser the network.<br>
+                2. (Attraction) Decay Coefficient - the lower the value, the smaller the chance of cells moving towards the attractor, the higher it is- the more linear the shape of the network will be.<br>
+                <br>
+                Notice that many configurations can slow down the loading time drastically.<br>
+                Better and faster versions are under development.<br>
+                <br>
+                For more information, visit https://github.com/raysinm/ca-angiogenesis/blob/master/project-report.pdf<br>
+                <br>
+                Thank you!<br>
+                -Maya Raysin and Matan Hoory<br>
+                
+            </p2>
+        </div>
+            <div id="form-and-animation">
+                <div id="animation-container">
                 <img src="../static/place-holder.gif" alt="Animation Placeholder">
                 <div id="loading-container" style="display: none;">
                     <p>Loading...</p>
@@ -51,7 +73,7 @@
                 
                 <label for="attraction_decay_coef">Attraction Decay Coefficient:</label>
                 <div class="form-element">
-                    <input type="range" id="attraction_decay_coef" name="attraction_decay_coef" min="0" max="10" step="0.001" value="0.7">
+                    <input type="range" id="attraction_decay_coef" name="attraction_decay_coef" min="0" max="3" step="0.001" value="0.7">
                     <input type="number" id="attraction_decay_coef" name="attraction_decay_coef" min="0" max="3" step="0.001" value="0.7">
                     <button type="button" class="reset-button" data-input-id="attraction_decay_coef">Reset</button>
                 </div>

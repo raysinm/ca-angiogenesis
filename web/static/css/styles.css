@@ -1,10 +1,10 @@
 /* Reset default browser styles */
-body,
+/* body,
 h1,
 p1 {
   margin: 0;
   padding: 0;
-}
+} */
 
 /* Set a base font and background color */
 body {
@@ -12,44 +12,31 @@ body {
   background-color: #f2f2f2;
 }
 
-/* Add some spacing and center the content */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(2, 1fr);
-  justify-items: center;
-  text-align: center;
-}
-
 .heading {
+  padding: 1%;
   text-align: center;
-  padding: 2%;
 }
 
 .heading h1{
-  font-size: 32px;
-  font-weight: bold;
-  padding-bottom: 1%;
-}
-.heading p1{
-  font-size: 18px;
-  color: #230095;
-}
-
-/* Style the heading */
-/* h1 {
-  
-} */
-
-/* Style the paragraph */
-/* p1 {
-
   text-align: center;
-} */
+  font-size: xx-large;
+  font-weight: bold;
+  padding-bottom: 0.5%;
+}
+.heading .subtitle {
+  text-align: center;
+  font-size: x-large;
+  color: #190a4a;
+  padding-bottom: 2%;
+}
 
+.info{
+  text-align: left;
+  padding: 1%;
+  font-size: medium;
+  color: #190a4a;
+  padding-bottom: 2%;
+}
 #form-and-animation {
   display: flex;
   flex-direction: row;
@@ -68,7 +55,7 @@ body {
 #form-and-animation #run-simulation-form .form-element {
   /* border:#ccc; */
   /* display: block; */
-  padding: 4px;
+  padding: 1%;
   display: flex;
   flex-direction: row;
 }
@@ -85,11 +72,10 @@ body {
   border-radius: 4px;
   border: 1px solid #ccc;
 }
+
 #form-and-animation input[type="range"] {
-  width: 200px;
-  /* padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc; */
+  width: 300px;
+  color: #190a4a;
 }
 
 #form-and-animation .buttons {
@@ -143,22 +129,3 @@ body {
 }
 
 
-/* Style the form
-#run-simulation-form {
-
-} */
-/* 
-#animation-container {
-  
-} */
-
-
-
-
-
-
-
-
-
-
-/* Adjust the size of the animation */
