@@ -8,8 +8,8 @@ By Matan Hoory and Maya Raysin
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Installation](#installation)
 - [Usage](#usage)
+- [Installation](#installation)
 
 
 ## Introduction
@@ -30,24 +30,88 @@ which the movement of tip cells creates a trail of stalk cells.
 
 See project report for more information.  
 
-
 ## Installation
-
-Dependencies (available in requirements.txt): 
+First, clone the repository via git clone to your desired directory.
 ```
-matplotlib>=3.7.1
-numpy>=1.24.2
-pandas>=1.5.3
+git clone https://github.com/raysinm/ca-angiogenesis.git  
 ```
-Written in python 3.8.10
 
+### Option A: Docker Compose - RECOMMENDED
+1. Install docker and docker-compose on your machine. We recommend running linux or wsl2 for that matter. 
+See official docker docs: 
+  - Docker engine: https://docs.docker.com/engine/install/
+  - Docker compose: https://docs.docker.com/compose/install/
+
+2. Simply run the following command from the main directory:
+```
+docker-compose up
+```
+This will pull the latest docker images of the engine and the web client from dockerhub, set all configurations needed and will run the container.
+
+### Option B: Local Docker Build
+As in option A, you will need docker installed on your machine.
+Next, go to the /docker directory and perform docker-compose up as before:
+```
+cd docker/
+docker-compose build && docker-compose up
+```
+This will build the images locally instead of pulling them from dockerhub. The yml file will configure everything for you and will run the application.
+
+### Option C: Manual Setup (No Docker)
+If you do not want to run via docker and docker-compose, you can still run the web app directly from your computer. 
+We recommend using a python 3.10 virtual environment and installing the following requirements (available in /requirements.txt):
+```
+grpcio==1.53.0
+ipython==8.13.2
+protobuf==4.21.12
+Flask==2.3.2
+numpy==1.24.2
+matplotlib==3.7.1
+pandas==2.0.1
+Pillow==9.5.0
+```
+1. In /engine directory run:
+```
+python3 engine_server.py
+```
+2. In a seperate window, in /web directory run:
+```
+export FLASK_MANUAL_RUN=1
+flask run
+```
+
+### Option D: Manual Visualization
+This option does not use the web app in this git repository. We recommend having python>=3.8 and the following requirements installed:
+(specified in /requirements_option_d.txt)
+```
+numpy==1.24.2
+matplotlib==3.7.1
+pandas==2.0.1
+```
 
 ## Usage
 
-See project report for more information on usage and methods.  
-A web app for more convenient usage is under development. 
+### Options A+B:
+1. Make sure that 'docker-compose up' command did not fail and that the flask server is running.
+2. Open a new browser window and enter "https://localhost"
+3. Follow the instructions inside
+4. Enjoy!
 
-- main.py - Used for running the engine. Examples included inside.
-- config.json - Used for input of different parameters for the model (e.g p_migrate for defining the probability of a tip cell to move).  
-- initial_states.py - Imported to main.py and used for configuration of initial stated for the grid. Sample initial grids are available. 
+### Option C:
+1. Make sure that the engine-server is showing "Engine server running".
+2. Make sure that the flask service is running in a seperate window.
+3. Open a new browser window and enter "https://localhost:5000"
+4. Follow the instructions and enjoy!
+
+### Option D:
+
+Simply go to engine/main.py and follow the unstructions.
+Parameter configurations can be manually inputted in engine/config.json.
+Run the following line from engine/ to show the results:
+```
+python3 main.py
+```
+
+See project report for more information on usage and methods, and the meaning behind them.
+
 
