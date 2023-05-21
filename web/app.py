@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, jsonify
 import json
 # from pathlib import Path
 import sys
+import os
 sys.path.append("../web/")
 
 from . import engine_client
@@ -46,7 +47,8 @@ def run_simulation():
         }
 
     # Sending params and getting animation over gRPC
-    animation_gif = engine_client.run(json.dumps(form_data))
+    manual_run = os.environ.get('FLASK_MANUAL_RUN')
+    animation_gif = engine_client.run(json.dumps(form_data), manual_run)
 
     # Should call the server with the form dict from the html  
     # home = app.url_for(endpoint='index')
@@ -54,4 +56,5 @@ def run_simulation():
     return json.dumps(animation_gif)    #Danger: whats being passed?    --currently, a string with a dictionary of 'animation' and 'type'
 
 if __name__ == '__main__':
+    
     app.run(debug=True)
