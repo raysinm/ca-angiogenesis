@@ -8,8 +8,8 @@ By Matan Hoory and Maya Raysin
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Usage](#usage)
 - [Installation](#installation)
+- [Usage](#usage)
 
 
 ## Introduction
@@ -39,8 +39,9 @@ git clone https://github.com/raysinm/ca-angiogenesis.git
 ### Option A: Docker Compose - RECOMMENDED
 1. Install docker and docker-compose on your machine. We recommend running linux or wsl2 for that matter. 
 See official docker docs: 
-  - Docker engine: https://docs.docker.com/engine/install/
-  - Docker compose: https://docs.docker.com/compose/install/
+    - Docker engine: https://docs.docker.com/engine/install/
+    - Docker compose: https://docs.docker.com/compose/install/
+
 
 2. Simply run the following command from the main directory:
 ```
