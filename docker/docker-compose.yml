@@ -24,6 +24,7 @@ services:
       - engine-server
     environment: 
       - FLASK_APP=app
+      - FLASK_MANUAL_RUN=0
     working_dir: /app/web
     command: flask run --host=0.0.0.0
   
