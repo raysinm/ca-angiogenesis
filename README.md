@@ -78,6 +78,7 @@ python3 engine_server.py
 2. In a seperate window, in /web directory run:
 ```
 export FLASK_MANUAL_RUN=1
+export FLASK_APP=app
 flask run
 ```
 
